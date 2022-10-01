@@ -17,5 +17,6 @@
         [Required(ErrorMessage = "Telefoonnummer is verplicht!")]
         [Phone(ErrorMessage = "Voor een geldig telefoonnummer in!")]
         public string? PhoneNumber { get; set; }
+        public int AmountOfReports { get; set; } = 0;
     }
 }
