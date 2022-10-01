@@ -6,7 +6,7 @@
         [Required(ErrorMessage = "Naam is verplicht!")]
         public string? Name { get; set; }
         [Required(ErrorMessage = "Geboortedatum is verplicht!")]
-        public DateOnly? DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         [Required(ErrorMessage = "Studentennummer is verplicht!")]
         public string? StudentNumber { get; set; }
         [Required(ErrorMessage = "Emailadres is verplicht!")]

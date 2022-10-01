@@ -14,7 +14,7 @@
         [Required(ErrorMessage = "Ophaaldatum en tijdstip is verplicht!")]
         public DateTime? PickUpDateTime { get; set; }
         [Required(ErrorMessage = "Uiterlijke ophaal tijdstip is verplicht!")]
-        public TimeOnly? LatestPickUpTime { get; set; }
+        public DateTime? LatestPickUpTime { get; set; }
         [Required(ErrorMessage = "Het aangeven van ofdat het pakket 18+ is is verplicht!")]
         public bool? IsEightteenPlusPacket { get; set; }
         [Required(ErrorMessage = "Prijs is verplicht!")]
