@@ -2,11 +2,10 @@
 {
     public interface IPacketRepository
     {
-        Task<Packet> GetPacketByIdAsync(int PacketId);
+        Task<Packet> GetPacketByIdAsync(int packetId);
         Task<IEnumerable<Packet>> GetPacketsAsync();
         Task CreatePacketAsync(Packet packet);
-        Task ReservePacketAsync(Packet packet, Student student);
-        Task UpdatePacketAsync(Packet packet);
-        Task DeletePacketAsync(int PacketId);
+        Task UpdatePacketAsync(Packet newPacket);
+        Task DeletePacketAsync(int packetId);
     }
 }
