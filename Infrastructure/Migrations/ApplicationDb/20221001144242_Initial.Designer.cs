@@ -4,16 +4,18 @@ using Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(AvansDbContext))]
-    partial class AvansDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20221001144242_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,10 +138,15 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PacketId")
+                        .HasColumnType("int");
+
                     b.Property<byte[]>("Picture")
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("ProductId");
+
+                    b.HasIndex("PacketId");
 
                     b.ToTable("Products");
                 });
@@ -183,21 +190,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("PacketProduct", b =>
-                {
-                    b.Property<int>("PacketsPacketId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductsProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PacketsPacketId", "ProductsProductId");
-
-                    b.HasIndex("ProductsProductId");
-
-                    b.ToTable("PacketProduct");
-                });
-
             modelBuilder.Entity("Core.Domain.Entities.Packet", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Canteen", "Canteen")
@@ -215,19 +207,16 @@ namespace Infrastructure.Migrations
                     b.Navigation("ReservedBy");
                 });
 
-            modelBuilder.Entity("PacketProduct", b =>
+            modelBuilder.Entity("Core.Domain.Entities.Product", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Packet", null)
-                        .WithMany()
-                        .HasForeignKey("PacketsPacketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Products")
+                        .HasForeignKey("PacketId");
+                });
 
-                    b.HasOne("Core.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("Core.Domain.Entities.Packet", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

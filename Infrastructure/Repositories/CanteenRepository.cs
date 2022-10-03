@@ -2,8 +2,8 @@
 {
     public class CanteenRepository : ICanteenRepository
     {
-        private readonly AvansDbContext _context;
-        public CanteenRepository(AvansDbContext context)
+        private readonly ApplicationDbContext _context;
+        public CanteenRepository(ApplicationDbContext context)
         {
             _context = context;
         }

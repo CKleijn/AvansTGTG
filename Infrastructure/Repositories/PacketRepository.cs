@@ -2,8 +2,8 @@
 {
     public class PacketRepository : IPacketRepository
     {
-        private readonly AvansDbContext _context;
-        public PacketRepository(AvansDbContext context)
+        private readonly ApplicationDbContext _context;
+        public PacketRepository(ApplicationDbContext context)
         {
             _context = context;
         }

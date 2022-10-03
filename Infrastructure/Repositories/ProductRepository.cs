@@ -2,8 +2,8 @@
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly AvansDbContext _context;
-        public ProductRepository(AvansDbContext context)
+        private readonly ApplicationDbContext _context;
+        public ProductRepository(ApplicationDbContext context)
         {
             _context = context;
         }

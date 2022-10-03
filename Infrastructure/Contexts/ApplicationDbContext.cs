@@ -1,8 +1,8 @@
 ﻿namespace Infrastructure.Contexts
 {
-    public class AvansDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public AvansDbContext(DbContextOptions<AvansDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Canteen>? Canteens { get; set; }
         public DbSet<CanteenEmployee>? CanteenEmployees { get; set; }
         public DbSet<Packet>? Packets { get; set; }
