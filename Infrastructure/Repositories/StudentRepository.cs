@@ -2,8 +2,8 @@
 {
     public class StudentRepository : IStudentRepository
     {
-        private readonly AvansDbContext _context;
-        public StudentRepository(AvansDbContext context)
+        private readonly ApplicationDbContext _context;
+        public StudentRepository(ApplicationDbContext context)
         {
             _context = context;
         }
