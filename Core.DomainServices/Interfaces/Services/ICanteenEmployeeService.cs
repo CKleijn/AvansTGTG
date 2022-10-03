@@ -1,6 +1,6 @@
-﻿namespace Core.DomainServices.Interfaces
+﻿namespace Core.DomainServices.Interfaces.Services
 {
-    public interface ICanteenEmployeeRepository
+    public interface ICanteenEmployeeService
     {
         Task<CanteenEmployee> GetCanteenEmployeeByIdAsync(int canteenEmployeeId);
         Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee);

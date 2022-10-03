@@ -1,4 +1,4 @@
-﻿namespace Core.DomainServices.Interfaces
+﻿namespace Core.DomainServices.Interfaces.Repositories
 {
     public interface IPacketRepository
     {
