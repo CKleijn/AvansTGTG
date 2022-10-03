@@ -1,4 +1,3 @@
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AvansDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AvansAppConnectionString")));

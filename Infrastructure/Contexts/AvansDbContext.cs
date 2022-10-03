@@ -1,4 +1,4 @@
-﻿namespace Infrastructure
+﻿namespace Infrastructure.Contexts
 {
     public class AvansDbContext : DbContext
     {
