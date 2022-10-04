@@ -1,0 +1,28 @@
+﻿@model CanteenEmployeeRegisterViewModel
+@{
+
+}
+
+<div>
+    <form asp-action="RegisterCanteenEmployee" asp-controller="Account" method="post">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" />
+        <br />
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" />
+        <br />
+        <label asp-for="EmployeeNumber"></label>
+        <input asp-for="EmployeeNumber" />
+        <br />
+        <label asp-for="City"></label>
+        <input asp-for="City" />
+        <br />
+        <label asp-for="Canteen"></label>
+        <input asp-for="Canteen" />
+        <br />
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+        <br />
+        <button type="submit">Registreren</button>
+    </form>
+</div>
