@@ -1,0 +1,34 @@
+﻿@model StudentRegisterViewModel
+@{
+
+}
+
+<div>
+    <form asp-action="RegisterStudent" asp-controller="Account" method="post">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" />
+        <br />
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" />
+        <br />
+        <label asp-for="DateOfBirth"></label>
+        <input asp-for="DateOfBirth" />
+        <br />
+        <label asp-for="EmailAddress"></label>
+        <input asp-for="EmailAddress" />
+        <br />
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" />
+        <br />
+        <label asp-for="StudentNumber"></label>
+        <input asp-for="StudentNumber" />
+        <br />
+        <label asp-for="StudyCity"></label>
+        <input asp-for="StudyCity" />
+        <br />
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+        <br />
+        <button type="submit">Registreren</button>
+    </form>
+</div>

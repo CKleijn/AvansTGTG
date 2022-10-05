@@ -3,11 +3,11 @@
     public class CanteenEmployee
     {
         public int CanteenEmployeeId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Naam is verplicht!")]
         public string? Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Personeelsnummer is verplicht!")]
         public string? EmployeeNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Locatie is verplicht!")]
         public string? Location { get; set; }
     }
 }

@@ -3,11 +3,11 @@
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-        public DbSet<Canteen>? Canteens { get; set; }
-        public DbSet<CanteenEmployee>? CanteenEmployees { get; set; }
-        public DbSet<Packet>? Packets { get; set; }
-        public DbSet<Product>? Products { get; set; }
-        public DbSet<Student>? Students { get; set; }
+        public DbSet<Canteen> Canteens { get; set; } = null!;
+        public DbSet<CanteenEmployee> CanteenEmployees { get; set; } = null!;
+        public DbSet<Packet> Packets { get; set; } = null!;
+        public DbSet<Product> Products { get; set; } = null!;
+        public DbSet<Student> Students { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
