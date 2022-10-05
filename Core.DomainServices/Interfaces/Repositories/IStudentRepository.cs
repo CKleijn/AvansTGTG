@@ -4,5 +4,6 @@
     {
         Task<Student> GetStudentByIdAsync(int studentId);
         Task CreateStudentAsync(Student student);
+        Task UpdateStudentAsync(Student student);
     }
 }

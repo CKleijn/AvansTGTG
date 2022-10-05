@@ -4,8 +4,8 @@
     {
         Task<Packet> GetPacketByIdAsync(int packetId);
         Task<IEnumerable<Packet>> GetPacketsAsync();
-        Task<IEnumerable<Packet>> GetMyReservedPacketsAsync();
-        Task<IEnumerable<Packet>> GetMyOfferedPacketsAsync();
+        Task<IEnumerable<Packet>> GetMyReservedPacketsAsync(Student student);
+        Task<IEnumerable<Packet>> GetMyOfferedPacketsAsync(Canteen canteen);
         Task<IEnumerable<Packet>> GetCanteenSpecificPacketsAsync(Canteen canteen);
         Task CreatePacketAsync(Packet packet);
         Task ReservePacketAsync(Packet packet, Student student);

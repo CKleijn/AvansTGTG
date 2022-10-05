@@ -33,5 +33,19 @@
                 throw new InvalidOperationException();
             }
         }
+
+        public async Task UpdateStudentAsync(Student student)
+        {
+            var newStudent = _context.Students.Update(student);
+
+            if (newStudent != null)
+            {
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
     }
 }
