@@ -2,7 +2,7 @@
 {
     public interface IStudentRepository
     {
-        Task<Student> GetStudentByIdAsync(int studentId);
+        Task<Student> GetStudentByStudentNumberAsync(string studentNumber);
         Task CreateStudentAsync(Student student);
         Task UpdateStudentAsync(Student student);
     }

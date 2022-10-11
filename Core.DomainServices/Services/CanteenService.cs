@@ -9,6 +9,11 @@
             _canteenRepository = canteenRepository;
         }
 
+        public async Task<Canteen> GetCanteenByLocationAsync(string canteenLocation)
+        {
+            return await _canteenRepository.GetCanteenByLocationAsync(canteenLocation);
+        }
+
         public async Task<IEnumerable<Canteen>> GetCanteensAsync()
         {
             return await _canteenRepository.GetCanteensAsync();

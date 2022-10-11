@@ -4,12 +4,12 @@
     {
         Task<Packet> GetPacketByIdAsync(int packetId);
         Task<IEnumerable<Packet>> GetPacketsAsync();
-        Task<IEnumerable<Packet>> GetMyReservedPacketsAsync(Student student);
-        Task<IEnumerable<Packet>> GetMyOfferedPacketsAsync(Canteen canteen);
-        Task<IEnumerable<Packet>> GetCanteenSpecificPacketsAsync(Canteen canteen);
-        Task CreatePacketAsync(Packet packet);
-        Task ReservePacketAsync(Packet packet, Student student);
-        Task UpdatePacketAsync(Packet newPacket);
-        Task DeletePacketAsync(int packetId);
+        Task<IEnumerable<Packet>> GetMyReservedPacketsAsync(string studentNumber);
+        Task<IEnumerable<Packet>> GetMyCanteenOfferedPacketsAsync(string employeeNumber);
+        Task<IEnumerable<Packet>> GetSpecificCanteenPacketsAsync(Canteen canteen);
+        Task<Packet> CreatePacketAsync(Packet packet, string employeeNumber, IList<string> products);
+        Task<bool> ReservePacketAsync(int packetId, string studentNumber);
+        //Task<bool> UpdatePacketAsync(int packetId, string employeeNumber, Packet newPacket);
+        Task<bool> DeletePacketAsync(int packetId, string employeeNumber);
     }
 }

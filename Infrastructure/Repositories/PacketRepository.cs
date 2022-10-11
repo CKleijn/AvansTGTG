@@ -9,7 +9,7 @@
         }
         public async Task<Packet> GetPacketByIdAsync(int packetId)
         {
-            var packet = await _context.Packets.FirstOrDefaultAsync(p => p.PacketId == packetId);
+            var packet = await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).FirstOrDefaultAsync(p => p.PacketId == packetId);
 
             if (packet != null)
             {
@@ -21,15 +21,16 @@
             }
         }
 
-        public async Task<IEnumerable<Packet>> GetPacketsAsync() => await _context.Packets.ToListAsync();
+        public async Task<IEnumerable<Packet>> GetPacketsAsync() => await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).ToListAsync();
 
-        public async Task CreatePacketAsync(Packet packet)
+        public async Task<Packet> CreatePacketAsync(Packet packet)
         {
             var newPacket = await _context.Packets.AddAsync(packet);
 
             if (newPacket != null)
             {
                 await _context.SaveChangesAsync();
+                return packet;
             }
             else
             {
@@ -37,32 +38,34 @@
             }
         }
 
-        public async Task UpdatePacketAsync(Packet newPacket)
+        public async Task<bool> UpdatePacketAsync(Packet newPacket)
         {
             var packet = _context.Packets.Update(newPacket);
 
             if (packet != null)
             {
                 await _context.SaveChangesAsync();
+                return true;
             }
             else
             {
-                throw new InvalidOperationException();
+                return false;
             }
 
         }
-        public async Task DeletePacketAsync(int packetId)
+        public async Task<bool> DeletePacketAsync(int packetId)
         {
-            var packet = await _context.Packets.FirstOrDefaultAsync(p => p.PacketId == packetId);
+            var packet = await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).FirstOrDefaultAsync(p => p.PacketId == packetId);
 
             if (packet != null)
             {
                 _context.Packets.Remove(packet);
                 await _context.SaveChangesAsync();
+                return true;
             }
             else
             {
-                throw new InvalidOperationException();
+                return false;
             }
         }
     }

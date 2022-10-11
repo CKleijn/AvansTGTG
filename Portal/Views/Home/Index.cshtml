@@ -1,7 +1,51 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Home";
 }
 
-<div>
-    <h1>Welcome</h1>
+<h2>Alle pakketten</h2>
+<div class="row">
+    @foreach (var packet in @Model.AllPackets.TakeLast(4))
+    {
+        <div class="col-3 mb-5">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="https://8xpub.com/img/p/vn-default-large_default.jpg" alt="Default img">
+                <div class="card-body">
+                    <h5 class="card-title">@packet.Name</h5>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
+@if(Model.Student) {
+    <h2>Mijn gereserveerde pakketten</h2>
+    <div class="row">
+        @foreach (var packet in @Model.MyReservedPackets.TakeLast(4))
+        {
+            <div class="col-3 mb-5">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="https://8xpub.com/img/p/vn-default-large_default.jpg" alt="Default img">
+                    <div class="card-body">
+                        <h5 class="card-title">@packet.Name</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+} else if(Model.CanteenEmployee) {
+    <h2>Alle kantine pakketten</h2>
+    <div class="row">
+        @foreach (var packet in @Model.AllCanteenPackets.TakeLast(4))
+        {
+            <div class="col-3 mb-5">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="https://8xpub.com/img/p/vn-default-large_default.jpg" alt="Default img">
+                    <div class="card-body">
+                        <h5 class="card-title">@packet.Name</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

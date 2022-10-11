@@ -9,9 +9,9 @@
             _studentRepository = studentRepository;
         }
 
-        public async Task<Student> GetStudentByIdAsync(int studentId)
+        public async Task<Student> GetStudentByStudentNumberAsync(string studentNumber)
         {
-            return await _studentRepository.GetStudentByIdAsync(studentId);
+            return await _studentRepository.GetStudentByStudentNumberAsync(studentNumber);
         }
 
         public async Task CreateStudentAsync(Student student)

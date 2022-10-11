@@ -1,0 +1,49 @@
+﻿@using Core.Domain.Enums
+@model PacketViewModel
+@{
+    ViewData["Title"] = "Stel pakket samen";
+}
+
+<form asp-action="CreatePacket" asp-controller="Packet" method="post">
+    <div asp-validation-summary="All"></div>
+    <div class="form-group">
+        <label asp-for="Packet.Name" class="form-label"></label>
+        <input asp-for="Packet.Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Packet.MealType" class="form-label"></label>
+        <select asp-for="Packet.MealType" class="form-control" asp-items="Html.GetEnumSelectList<MealTypes>()">
+            <option>Kies type</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Packet.Products" class="form-label"></label>
+        @foreach (var product in Model.AllProducts)
+        {
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="SelectedProducts" value="@product.Value"
+                        @if(Model.SelectedProducts.Contains(product.Value))
+                        {
+                            <text> checked </text>
+                        }
+                    /> 
+                    @product.Text
+                </label>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label asp-for="Packet.Price" class="form-label"></label>
+        <input asp-for="Packet.Price" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Packet.PickUpDateTime" class="form-label"></label>
+        <input asp-for="Packet.PickUpDateTime" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Packet.LatestPickUpTime" class="form-label"></label>
+        <input asp-for="Packet.LatestPickUpTime" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Aanmaken</button>
+</form>

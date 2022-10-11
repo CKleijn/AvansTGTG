@@ -7,9 +7,9 @@
         {
             _context = context;
         }
-        public async Task<Student> GetStudentByIdAsync(int studentId)
+        public async Task<Student> GetStudentByStudentNumberAsync(string studentNumber)
         {
-            var student = await _context.Students.FirstOrDefaultAsync(s => s.StudentId == studentId);
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.StudentNumber == studentNumber);
 
             if (student != null)
             {

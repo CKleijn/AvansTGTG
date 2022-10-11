@@ -77,6 +77,9 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CanteenEmployeeId"), 1L, 1);
 
+                    b.Property<int>("City")
+                        .HasColumnType("int");
+
                     b.Property<string>("EmployeeNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

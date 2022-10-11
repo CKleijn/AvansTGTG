@@ -8,9 +8,9 @@
         {
             _canteenEmployeeRepository = canteenEmployeeRepository;
         }
-        public async Task<CanteenEmployee> GetCanteenEmployeeByIdAsync(int canteenEmployeeId)
+        public async Task<CanteenEmployee> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber)
         {
-            return await _canteenEmployeeRepository.GetCanteenEmployeeByIdAsync(canteenEmployeeId);
+            return await _canteenEmployeeRepository.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
         }
 
         public async Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee)
