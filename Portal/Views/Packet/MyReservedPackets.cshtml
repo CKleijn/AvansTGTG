@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Packet>
+@{
+    ViewData["Title"] = "Mijn gereserveerde pakketten";
+}
+
+<h3>Mijn gereserveerde pakketten</h3>
+<div class="row">
+    @foreach (var packet in @Model)
+    {
+        <div class="col-3 mb-5">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="/FoodPacket.png" alt="Default img">
+                <div class="card-body">
+                    <h4 class="card-title">@packet.Name</h4>
+                    <div class="d-flex justify-content-between w-100">
+                        <a class="btn btn-blue w-100" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

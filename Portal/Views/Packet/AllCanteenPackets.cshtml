@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Packet>
+@{
+    ViewData["Title"] = "Mijn kantine pakketten";
+}
+
+<h3>Mijn kantine pakketten</h3>
+<div class="row">
+    @foreach (var packet in @Model)
+    {
+        <div class="col-3 mb-5">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="/FoodPacket.png" alt="Default img">
+                <div class="card-body">
+                    <h4 class="card-title">@packet.Name</h4>
+                    <div>
+                        <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                        <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="UpdatePacket" asp-route-id="@packet.PacketId">Bewerken</a>
+                        <button data-toggle="modal" data-target="#deleteModal_@packet.PacketId" type="button" class="btn btn-blue w-100">Verwijderen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteModal_@packet.PacketId" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Verwijderen</h5>
+                    </div>
+                    <div class="modal-body">
+                        Weet je zeker dat je @packet.Name wilt verwijderen?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-blue" data-dismiss="modal">Annuleren</button>
+                        <form asp-controller="Packet" asp-action="DeletePacket" asp-route-id="@packet.PacketId" method="post">
+                            <button class="btn btn-blue" type="submit">Verwijderen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

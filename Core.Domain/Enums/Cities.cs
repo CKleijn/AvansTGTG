@@ -9,11 +9,11 @@ namespace Core.Domain.Enums
 {
     public enum Cities
     {
-        [Description("Breda")]
+        [Display(Name = "Breda")]
         Breda,
-        [Description("Den Bosch")]
+        [Display(Name = "Den Bosch")]
         DenBosch,
-        [Description("Tilburg")]
+        [Display(Name = "Tilburg")]
         Tilburg
     }
 }

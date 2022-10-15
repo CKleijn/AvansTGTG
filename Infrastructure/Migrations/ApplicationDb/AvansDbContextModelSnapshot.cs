@@ -77,6 +77,9 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CanteenEmployeeId"), 1L, 1);
 
+                    b.Property<int>("City")
+                        .HasColumnType("int");
+
                     b.Property<string>("EmployeeNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -102,14 +105,13 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PacketId"), 1L, 1);
 
-                    b.Property<int>("CanteenId")
+                    b.Property<int?>("CanteenId")
                         .HasColumnType("int");
 
-                    b.Property<int>("City")
+                    b.Property<int?>("City")
                         .HasColumnType("int");
 
                     b.Property<bool?>("IsEightteenPlusPacket")
-                        .IsRequired()
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LatestPickUpTime")
@@ -212,9 +214,6 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"), 1L, 1);
 
-                    b.Property<int>("AmountOfReports")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DateOfBirth")
                         .IsRequired()
                         .HasColumnType("datetime2");
@@ -262,9 +261,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Domain.Entities.Canteen", "Canteen")
                         .WithMany()
-                        .HasForeignKey("CanteenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CanteenId");
 
                     b.HasOne("Core.Domain.Entities.Student", "ReservedBy")
                         .WithMany()

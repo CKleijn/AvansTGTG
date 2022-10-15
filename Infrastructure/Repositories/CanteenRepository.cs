@@ -7,6 +7,15 @@
         {
             _context = context;
         }
+        public async Task<Canteen> GetCanteenByLocationAsync(string canteenLocation)
+        {
+            var canteen = await _context.Canteens.FirstOrDefaultAsync(c => c.Location == canteenLocation);
+
+            if (canteen != null)
+                return canteen;
+            
+            throw new KeyNotFoundException();
+        }
         public async Task<IEnumerable<Canteen>> GetCanteensAsync() => await _context.Canteens.ToListAsync();
     }
 }

@@ -1,3 +1,8 @@
+using Core.DomainServices.Interfaces.Repositories;
+using Core.DomainServices.Interfaces.Services;
+using Core.DomainServices.Services;
+using Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationConnectionString")));
@@ -17,9 +22,21 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("StudentOnly", policy => policy.RequireClaim("Student"));
-    options.AddPolicy("CanteenEmployeeOnly", policy => policy.RequireClaim("CanteenEmployee"));
+    options.AddPolicy("StudentOnly", policy => policy.RequireClaim("Role", "Student"));
+    options.AddPolicy("CanteenEmployeeOnly", policy => policy.RequireClaim("Role", "CanteenEmployee"));
 });
+
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<ICanteenEmployeeRepository, CanteenEmployeeRepository>();
+builder.Services.AddScoped<IPacketRepository, PacketRepository>();
+builder.Services.AddScoped<ICanteenRepository, CanteenRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ICanteenEmployeeService, CanteenEmployeeService>();
+builder.Services.AddScoped<IPacketService, PacketService>();
+builder.Services.AddScoped<ICanteenService, CanteenService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllersWithViews();
 

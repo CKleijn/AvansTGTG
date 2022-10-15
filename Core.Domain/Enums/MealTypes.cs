@@ -9,15 +9,15 @@ namespace Core.Domain.Enums
 {
     public enum MealTypes
     {
-        [Description("Brood")]
+        [Display(Name = "Brood")]
         Bread,
-        [Description("Drank")]
+        [Display(Name = "Drank")]
         Drinks,
-        [Description("Snack")]
+        [Display(Name = "Snack")]
         Snack,
-        [Description("Soep")]
+        [Display(Name = "Soep")]
         Soup,
-        [Description("Warme Maaltijd")]
+        [Display(Name = "Warme Maaltijd")]
         WarmDinner
     }
 }

@@ -1,0 +1,57 @@
+﻿@using Core.Domain.Enums
+@model PacketViewModel
+@{
+    ViewData["Title"] = "Bewerk pakket";
+}
+
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-10 p-0">
+            <div class="alert alert-danger m-0" role="alert">
+                <div asp-validation-summary="All"></div>
+            </div>
+        </div>
+    </div>
+}
+<form asp-action="UpdatePacket" asp-controller="Packet" asp-route-id="@Model.Packet.PacketId" method="post">
+    <div class="row justify-content-center">
+        <div class="col-md-5 p-5">
+            <div class="form-group mb-4">
+                <label asp-for="Packet.Name" class="form-label"></label>
+                <input asp-for="Packet.Name" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.MealType" class="form-label"></label>
+                <select asp-for="Packet.MealType" class="form-control" asp-items="Html.GetEnumSelectList<MealTypes>()">
+                    <option selected disabled>Kies type</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.Price" class="form-label"></label>
+                <input asp-for="Packet.Price" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.PickUpDateTime" class="form-label"></label>
+                <input asp-for="Packet.PickUpDateTime" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.LatestPickUpTime" class="form-label"></label>
+                <input asp-for="Packet.LatestPickUpTime" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-blue btn-big w-100 mt-2">Aanmaken</button>
+        </div>
+        <div class="col-md-5 p-5">
+            <div class="form-group mb-4">
+                <label asp-for="Packet.Products" class="form-label"></label>
+                @foreach (var product in Model.AllProducts!)
+                {
+                    <div class="checkbox">
+                        <input type="checkbox" name="SelectedProducts" value="@product.Value" @(Model.SelectedProducts!.Contains(product.Value) ? "checked" : "") />
+                        @product.Text
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</form>

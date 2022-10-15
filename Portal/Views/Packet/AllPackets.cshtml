@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Packet>
+@{
+    ViewData["Title"] = "Alle pakketten";
+    var isStudent = User.HasClaim("Role", "Student");
+    var isCanteenEmployee = User.HasClaim("Role", "CanteenEmployee");
+}
+
+<h3>Alle pakketten</h3>
+<div class="row">
+    @foreach (var packet in @Model) {
+        <div class="col-3 mb-5">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="/FoodPacket.png" alt="Default img">
+                <div class="card-body">
+                    <h4 class="card-title">@packet.Name</h4>
+                    <div class="d-flex justify-content-between w-100">
+                        @if (isStudent || !isStudent && !isCanteenEmployee)
+                        {
+                            <a class="btn btn-blue w-100 me-2" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                            <form class="w-100" asp-controller="Packet" asp-action="ReservePacket" asp-route-id="@packet.PacketId" method="post">
+                                <button class="btn btn-blue w-100" type="submit">Reserveer</button>
+                            </form>
+                        }
+                        else if (isCanteenEmployee)
+                        {
+                            <a class="btn btn-blue w-100 me-2" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

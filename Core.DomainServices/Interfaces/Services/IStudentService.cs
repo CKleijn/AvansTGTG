@@ -2,8 +2,7 @@
 {
     public interface IStudentService
     {
-        Task<Student> GetStudentByIdAsync(int studentId);
+        Task<Student> GetStudentByStudentNumberAsync(string studentNumber);
         Task CreateStudentAsync(Student student);
-        Task ReportStudentAsync(Student student);
     }
 }

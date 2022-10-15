@@ -8,18 +8,14 @@
             _context = context;
         }
 
-        public async Task<CanteenEmployee> GetCanteenEmployeeByIdAsync(int canteenEmployeeId)
+        public async Task<CanteenEmployee> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber)
         {
-            var canteenEmployee = await _context.CanteenEmployees.FirstOrDefaultAsync(c => c.CanteenEmployeeId == canteenEmployeeId);
+            var canteenEmployee = await _context.CanteenEmployees.FirstOrDefaultAsync(c => c.EmployeeNumber == employeeNumber);
 
             if (canteenEmployee != null)
-            {
                 return canteenEmployee;
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            
+            throw new KeyNotFoundException();
         }
 
         public async Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee)

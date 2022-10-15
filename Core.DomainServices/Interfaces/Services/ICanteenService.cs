@@ -2,6 +2,7 @@
 {
     public interface ICanteenService
     {
+        Task<Canteen> GetCanteenByLocationAsync(string canteenLocation);
         Task<IEnumerable<Canteen>> GetCanteensAsync();
     }
 }

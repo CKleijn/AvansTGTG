@@ -2,7 +2,7 @@
 {
     public interface ICanteenEmployeeService
     {
-        Task<CanteenEmployee> GetCanteenEmployeeByIdAsync(int canteenEmployeeId);
+        Task<CanteenEmployee> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber);
         Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee);
     }
 }

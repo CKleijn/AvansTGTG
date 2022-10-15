@@ -1,14 +1,33 @@
 ﻿@model LoginViewModel
 @{
-
+    ViewData["Title"] = "Inloggen";
 }
 
-<div>
-    <form asp-action="Login" asp-controller="Account" method="post">
-        <label asp-for="IdentificationNumber"></label>
-        <input asp-for="IdentificationNumber" />
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
-        <button type="submit">Inloggen</button>
-    </form>
+@if(ViewData.ModelState.ErrorCount > 0) {
+    <div class="row justify-content-center">
+        <div class="col-md-10 p-0">
+            <div class="alert alert-danger m-0" role="alert">
+                <div asp-validation-summary="All"></div>
+            </div>
+        </div>
+    </div>
+}
+<div class="row justify-content-center my-5">
+    <div class="col-md-5 bg-blue border-right-o d-flex align-items-center justify-content-center py-5 c-box-shadow">
+        <h1 class="login-header">Inloggen</h1>
+    </div>
+    <div class="col-md-5 bg-grey p-5 c-box-shadow">
+        <form asp-action="Login" asp-controller="Account" method="post">
+            <div class="form-group mb-4">
+                <label asp-for="IdentificationNumber" class="form-label"></label>
+                <input asp-for="IdentificationNumber" class="form-control" placeholder="Bijv: 20229054" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="********" />
+            </div>
+            Nog geen account? <a class="blue-text link-hover" asp-controller="Account" asp-action="Register"><b>Registreer hier!</b></a>
+            <button type="submit" class="btn btn-blue btn-big w-100 mt-2">Inloggen</button>
+        </form>
+    </div>
 </div>

@@ -1,23 +1,31 @@
-﻿namespace Portal.Controllers
+﻿using Core.DomainServices.Interfaces.Services;
+using Portal.Models;
+
+namespace Portal.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
         private UserManager<IdentityUser> _userManager;
         private SignInManager<IdentityUser> _signInManager;
+        private IStudentService _studentService;
+        private ICanteenEmployeeService _canteenEmployeeService;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(
+            UserManager<IdentityUser> userManager, 
+            SignInManager<IdentityUser> signInManager, 
+            IStudentService studentService, 
+            ICanteenEmployeeService canteenEmployeeService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _studentService = studentService;
+            _canteenEmployeeService = canteenEmployeeService;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login() => View();
 
         [HttpPost]
         [AllowAnonymous]
@@ -30,18 +38,21 @@
                 if(user != null)
                 {
                     await _signInManager.SignOutAsync();
-                    if((await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false)).Succeeded)
-                    {
+                    if ((await _signInManager.PasswordSignInAsync(user!, loginModel.Password, false, false)).Succeeded)
                         return RedirectToAction("Index", "Home");
-                    }
+
+                    ModelState.AddModelError("WrongPassword", "Wachtwoord is onjuist!");
+                }
+                else
+                {
+                    ModelState.AddModelError("NoUser", "Er bestaat geen gebruiker met deze gegevens!");
                 }
             }
-
-            ModelState.AddModelError("InvalidLogin", "Verkeerde identificatienummer of wachtwoord!");
 
             return View(loginModel);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -50,10 +61,11 @@
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult RegisterStudent()
-        {
-            return View("Student/Register");
-        }
+        public IActionResult Register() => View();
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult RegisterStudent() => View("Student/Register");
 
         [HttpPost]
         [AllowAnonymous]
@@ -63,11 +75,12 @@
             {
                 var user = new IdentityUser
                 {
-                    UserName = studentRegisterViewModel.StudentNumber
+                    UserName = studentRegisterViewModel.StudentNumber,
+                    EmailConfirmed = true
                 };
 
                 var result = await _userManager.CreateAsync(user, studentRegisterViewModel.Password);
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Student", "Student"));
+                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "Student"));
 
                 var student = new Student
                 {
@@ -78,12 +91,16 @@
                     StudyCity = studentRegisterViewModel.StudyCity,
                     PhoneNumber = studentRegisterViewModel.PhoneNumber
                 };
-                // First need to have a service!
-                //await _studentRepository.CreateStudentAsync(student);
 
                 if (result.Succeeded)
                 {
+                    await _studentService.CreateStudentAsync(student);
+                    await _signInManager.PasswordSignInAsync(user, studentRegisterViewModel.Password, false, false);
                     return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("AlreadyUser", "Er bestaat al een account met dit studentennummer!");
                 }
             }
 
@@ -92,10 +109,7 @@
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult RegisterCanteenEmployee()
-        {
-            return View("CanteenEmployee/Register");
-        }
+        public IActionResult RegisterCanteenEmployee() => View("CanteenEmployee/Register");
 
         [HttpPost]
         [AllowAnonymous]
@@ -105,24 +119,30 @@
             {
                 var user = new IdentityUser
                 {
-                    UserName = canteenEmployeeRegisterViewModel.EmployeeNumber
+                    UserName = canteenEmployeeRegisterViewModel.EmployeeNumber,
+                    EmailConfirmed = true
                 };
 
                 var result = await _userManager.CreateAsync(user, canteenEmployeeRegisterViewModel.Password);
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("CanteenEmployee", "CanteenEmployee"));
+                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "CanteenEmployee"));
 
                 var canteenEmployee = new CanteenEmployee
                 {
                     Name = $"{canteenEmployeeRegisterViewModel.FirstName} {canteenEmployeeRegisterViewModel.LastName}",
                     EmployeeNumber = canteenEmployeeRegisterViewModel.EmployeeNumber,
-                    Location = $"{canteenEmployeeRegisterViewModel.City}, {canteenEmployeeRegisterViewModel.Canteen}"
+                    City = canteenEmployeeRegisterViewModel.City,
+                    Location = canteenEmployeeRegisterViewModel.Canteen
                 };
-                // First need to have a service!
-                //await _canteenEmployeeRepository.CreateCanteenEmployeeAsync(canteenEmployee);
 
                 if (result.Succeeded)
                 {
+                    await _canteenEmployeeService.CreateCanteenEmployeeAsync(canteenEmployee);
+                    await _signInManager.PasswordSignInAsync(user, canteenEmployeeRegisterViewModel.Password, false, false);
                     return RedirectToAction("Index", "Home");
+                } 
+                else
+                {
+                    ModelState.AddModelError("AlreadyUser", "Er bestaat al een account met dit personeelsnummer!");
                 }
             }
 

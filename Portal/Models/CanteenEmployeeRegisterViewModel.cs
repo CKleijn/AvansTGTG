@@ -1,4 +1,6 @@
-﻿namespace Portal.Models
+﻿using Core.Domain.Enums;
+
+namespace Portal.Models
 {
     public class CanteenEmployeeRegisterViewModel
     {
@@ -13,7 +15,7 @@
         public string? EmployeeNumber { get; set; }
         [Required(ErrorMessage = "Stad van de kantine is verplicht!")]
         [DisplayName("Stad van de kantine")]
-        public string? City { get; set; }
+        public Cities? City { get; set; }
         [DisplayName("Kantine")]
         [Required(ErrorMessage = "Kantine is verplicht!")]
         public string? Canteen { get; set; }

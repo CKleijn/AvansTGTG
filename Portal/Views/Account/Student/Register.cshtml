@@ -1,34 +1,61 @@
-﻿@model StudentRegisterViewModel
+﻿@using Core.Domain.Enums
+@model StudentRegisterViewModel
 @{
-
+    ViewData["Title"] = "Registreren als student";
 }
 
-<div>
-    <form asp-action="RegisterStudent" asp-controller="Account" method="post">
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" />
-        <br />
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" />
-        <br />
-        <label asp-for="DateOfBirth"></label>
-        <input asp-for="DateOfBirth" />
-        <br />
-        <label asp-for="EmailAddress"></label>
-        <input asp-for="EmailAddress" />
-        <br />
-        <label asp-for="PhoneNumber"></label>
-        <input asp-for="PhoneNumber" />
-        <br />
-        <label asp-for="StudentNumber"></label>
-        <input asp-for="StudentNumber" />
-        <br />
-        <label asp-for="StudyCity"></label>
-        <input asp-for="StudyCity" />
-        <br />
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
-        <br />
-        <button type="submit">Registreren</button>
-    </form>
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-10 p-0">
+            <div class="alert alert-danger m-0" role="alert">
+                <div asp-validation-summary="All"></div>
+            </div>
+        </div>
+    </div>
+}
+<div class="row justify-content-center my-5">
+    <div class="col-md-5 bg-blue border-right-o d-flex align-items-center justify-content-center py-5 c-box-shadow">
+        <h1 class="login-header text-center">student</h1>
+    </div>
+    <div class="col-md-5 bg-grey p-5 c-box-shadow">
+        <form asp-action="RegisterStudent" asp-controller="Account" method="post">
+            <div class="form-group mb-4">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="DateOfBirth" class="form-label"></label>
+                <input asp-for="DateOfBirth" type="date" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="EmailAddress" class="form-label"></label>
+                <input asp-for="EmailAddress" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="StudentNumber" class="form-label"></label>
+                <input asp-for="StudentNumber" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="StudyCity" class="form-label"></label>
+                <select asp-for="StudyCity" class="form-control" asp-items="Html.GetEnumSelectList<Cities>()">
+                    <option>Kies stad</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+            </div>
+            Al een account? <a class="blue-text link-hover" asp-controller="Account" asp-action="Login"><b>Log hier in!</b></a>
+            <button type="submit" class="btn btn-blue btn-big w-100 mt-2">Registreren</button>
+        </form>
+    </div>
 </div>
