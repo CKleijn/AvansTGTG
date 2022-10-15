@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Core.Domain.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Portal.Models
 {

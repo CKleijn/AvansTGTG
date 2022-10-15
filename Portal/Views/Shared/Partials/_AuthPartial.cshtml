@@ -7,18 +7,35 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-controller="Account" asp-action="Logout" >
-                <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Uitloggen</button>
-            </form>
+            <button data-toggle="modal" data-target="#logoutModal" type="button" class="nav-link white-text btn btn-link">Uitloggen</button>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" id="login" asp-controller="Account" asp-action="Login">Inloggen</a>
+            <a class="nav-link white-text" id="login" asp-controller="Account" asp-action="Login">Inloggen</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" id="register" asp-controller="Account" asp-action="Register">Registreren</a>
+        <li class="nav-item ml-2">
+            <a class="nav-link white-text" id="register" asp-controller="Account" asp-action="Register">Registreren</a>
         </li>
     }
 </ul>
+
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Uitloggen</h5>
+            </div>
+            <div class="modal-body">
+                Weet je zeker dat je wilt uitloggen?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-blue" data-dismiss="modal">Annuleren</button>
+                <form class="form-inline" asp-controller="Account" asp-action="Logout" >
+                    <button type="submit" class="btn btn-blue">Uitloggen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

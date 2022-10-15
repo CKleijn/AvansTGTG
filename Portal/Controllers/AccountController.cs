@@ -25,10 +25,7 @@ namespace Portal.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login() => View();
 
         [HttpPost]
         [AllowAnonymous]
@@ -41,15 +38,11 @@ namespace Portal.Controllers
                 if(user != null)
                 {
                     await _signInManager.SignOutAsync();
-                    if((await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false)).Succeeded)
-                    {
+                    if ((await _signInManager.PasswordSignInAsync(user!, loginModel.Password, false, false)).Succeeded)
                         return RedirectToAction("Index", "Home");
-                    } 
-                    else
-                    {
-                        ModelState.AddModelError("WrongPassword", "Wachtwoord is onjuist!");
-                    }
-                } 
+
+                    ModelState.AddModelError("WrongPassword", "Wachtwoord is onjuist!");
+                }
                 else
                 {
                     ModelState.AddModelError("NoUser", "Er bestaat geen gebruiker met deze gegevens!");
@@ -59,6 +52,7 @@ namespace Portal.Controllers
             return View(loginModel);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -67,17 +61,11 @@ namespace Portal.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        public IActionResult Register() => View();
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult RegisterStudent()
-        {
-            return View("Student/Register");
-        }
+        public IActionResult RegisterStudent() => View("Student/Register");
 
         [HttpPost]
         [AllowAnonymous]
@@ -108,7 +96,6 @@ namespace Portal.Controllers
                 {
                     await _studentService.CreateStudentAsync(student);
                     await _signInManager.PasswordSignInAsync(user, studentRegisterViewModel.Password, false, false);
-
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -122,10 +109,7 @@ namespace Portal.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult RegisterCanteenEmployee()
-        {
-            return View("CanteenEmployee/Register");
-        }
+        public IActionResult RegisterCanteenEmployee() => View("CanteenEmployee/Register");
 
         [HttpPost]
         [AllowAnonymous]

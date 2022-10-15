@@ -4,6 +4,5 @@
     {
         Task<Student> GetStudentByStudentNumberAsync(string studentNumber);
         Task CreateStudentAsync(Student student);
-        Task ReportStudentAsync(Student student);
     }
 }

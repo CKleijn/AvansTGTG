@@ -18,12 +18,5 @@
         {
             await _studentRepository.CreateStudentAsync(student);
         }
-
-        public async Task ReportStudentAsync(Student student)
-        {
-            student.AmountOfReports = student.AmountOfReports + 1;
-
-            await _studentRepository.UpdateStudentAsync(student);
-        }
     }
 }

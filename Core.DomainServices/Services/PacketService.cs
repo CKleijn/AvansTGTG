@@ -1,4 +1,7 @@
-﻿using Core.DomainServices.Interfaces.Services;
+﻿using Core.Domain.Entities;
+using Core.Domain.Enums;
+using Core.DomainServices.Interfaces.Services;
+using System.Net.Sockets;
 
 namespace Core.DomainServices.Services
 {
@@ -8,25 +11,26 @@ namespace Core.DomainServices.Services
         private readonly ICanteenEmployeeService _canteenEmployeeService;
         private readonly ICanteenService _canteenService;
         private readonly IStudentService _studentService;
-        private readonly IProductRepository _productRepository;
+        private readonly IProductService _productService;
 
-        public PacketService(IPacketRepository packetRepository, ICanteenEmployeeService canteenEmployeeService, ICanteenService canteenService, IStudentService studentService, IProductRepository productRepository)
+        public PacketService(IPacketRepository packetRepository, ICanteenEmployeeService canteenEmployeeService, ICanteenService canteenService, IStudentService studentService, IProductService productService)
         {
             _packetRepository = packetRepository;
             _canteenEmployeeService = canteenEmployeeService;
             _canteenService = canteenService;
             _studentService = studentService;
-            _productRepository = productRepository;
+            _productService = productService;
         }
 
-        public async Task<Packet> GetPacketByIdAsync(int packetId)
-        {
-            return await _packetRepository.GetPacketByIdAsync(packetId);
-        }
+        public async Task<Packet> GetPacketByIdAsync(int packetId) => await _packetRepository.GetPacketByIdAsync(packetId);
 
-        public async Task<IEnumerable<Packet>> GetPacketsAsync()
+        public async Task<IEnumerable<Packet>> GetPacketsAsync() => await _packetRepository.GetPacketsAsync();
+
+        public async Task<IEnumerable<Packet>> GetAllAvailablePacketsAsync()
         {
-            return await _packetRepository.GetPacketsAsync();
+            var allPackets = await _packetRepository.GetPacketsAsync();
+
+            return allPackets.Where(p => p.ReservedBy == null);
         }
 
         public async Task<IEnumerable<Packet>> GetSpecificCanteenPacketsAsync(Canteen canteen)
@@ -40,7 +44,7 @@ namespace Core.DomainServices.Services
         {
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location);
+            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location!);
 
             var allPackets = await _packetRepository.GetPacketsAsync();
 
@@ -58,28 +62,14 @@ namespace Core.DomainServices.Services
 
         public async Task<Packet> CreatePacketAsync(Packet packet, string employeeNumber, IList<string> products)
         {
-            var productList = new List<Product>();
-
-            var containsAlchohol = false;
-
-            foreach (var product in products)
-            {
-                var fullProduct = await _productRepository.GetProductByNameAsync(product);
-
-                if((bool) fullProduct.IsAlcoholic)
-                {
-                    containsAlchohol = true;
-                }
-
-                productList.Add(fullProduct);
-            }
+            dynamic productList = await CheckAlcoholReturnProductList(products);
 
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location);
+            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location!);
 
-            packet.Products = productList;
-            packet.IsEightteenPlusPacket = containsAlchohol;
+            packet.Products = productList.productList;
+            packet.IsEightteenPlusPacket = productList.containsAlchohol;
             packet.City = canteen.City;
             packet.Canteen = canteen;
 
@@ -88,67 +78,79 @@ namespace Core.DomainServices.Services
 
         public async Task<bool> ReservePacketAsync(int packetId, string studentNumber)
         {
+            var packet = await GetPacketByIdAsync(packetId);
+
+            packet.ReservedBy = await _studentService.GetStudentByStudentNumberAsync(studentNumber);
+
+            return await _packetRepository.UpdatePacketAsync(packetId);
+        }
+
+        public async Task<bool> UpdatePacketAsync(int packetId, Packet newPacket, string employeeNumber, IList<string> products)
+        {
             var packet = await _packetRepository.GetPacketByIdAsync(packetId);
 
-            if(packet != null)
-            {
-                var student = await _studentService.GetStudentByStudentNumberAsync(studentNumber);
+            dynamic productList = await CheckAlcoholReturnProductList(products);
 
-                if(student != null)
-                {
-                    packet.ReservedBy = student;
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-                    await _packetRepository.UpdatePacketAsync(packet);
+            packet.Name = newPacket.Name;
+            packet.Products = productList.productList;
+            packet.IsEightteenPlusPacket = productList.containsAlchohol;
+            packet.MealType = newPacket.MealType;
+            packet.Price = newPacket.Price;
+            packet.PickUpDateTime = newPacket.PickUpDateTime;
+            packet.LatestPickUpTime = newPacket.LatestPickUpTime;
 
-                    return true;
-                }
-            }
+            if (packet.Canteen?.Location == canteenEmployee.Location)
+                return await _packetRepository.UpdatePacketAsync(packetId);
 
             return false;
         }
 
-        //public async Task<bool> UpdatePacketAsync(int packetId, string employeeNumber, Packet newPacket)
-        //{
-        //    var packet = await _packetRepository.GetPacketByIdAsync(packetId);
-
-        //    if (packet != null)
-        //    {
-        //        var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
-
-        //        if (canteenEmployee != null)
-        //        {
-        //            if (packet.Canteen?.Location == canteenEmployee.Location)
-        //            {
-        //                await _packetRepository.UpdatePacketAsync(newPacket);
-
-        //                return true;
-        //            }
-        //        }
-        //    }
-
-        //    return false;
-        //}
-
         public async Task<bool> DeletePacketAsync(int packetId, string employeeNumber)
         {
-            var packet = await _packetRepository.GetPacketByIdAsync(packetId);
+            var packet = await GetPacketByIdAsync(packetId);
 
-            if(packet != null)
-            {
-                var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-                if(canteenEmployee != null)
-                {
-                    if(packet.Canteen?.Location == canteenEmployee.Location)
-                    {
-                        await _packetRepository.DeletePacketAsync(packetId);
-
-                        return true;
-                    }
-                }
-            }
+            if(packet.Canteen?.Location == canteenEmployee.Location)
+                return await _packetRepository.DeletePacketAsync(packetId);
 
             return false;
+        }
+
+        public async Task<bool> CheckReservedPickUpDate(Student student, Packet packet)
+        {
+            bool reservedPickUpDate = false;
+
+            foreach (var singlePacket in await GetPacketsAsync())
+                if (singlePacket.ReservedBy == student && singlePacket?.PickUpDateTime!.Value.DayOfYear == packet?.PickUpDateTime!.Value.DayOfYear)
+                    reservedPickUpDate = true;
+
+            return reservedPickUpDate;
+        }
+
+        public async Task<object> CheckAlcoholReturnProductList(IList<string> products)
+        {
+            var productList = new List<Product>();
+
+            var containsAlchohol = false;
+
+            foreach (var product in products)
+            {
+                var fullProduct = await _productService.GetProductByNameAsync(product);
+
+                if ((bool)fullProduct.IsAlcoholic!)
+                    containsAlchohol = true;
+
+                productList.Add(fullProduct);
+            }
+
+            return new
+            {
+                containsAlchohol,
+                productList
+            };
         }
     }
 }

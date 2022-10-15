@@ -4,8 +4,17 @@
 }
 
 
-<div class="text-center">
-    <a class="btn btn-primary" asp-controller="Account" asp-action="RegisterStudent">Student</a>
-    <a class="btn btn-primary" asp-controller="Account" asp-action="RegisterCanteenEmployee">Kantine medewerker</a>
-</div>
 
+<div class="row justify-content-center my-5">
+    <div class="col-md-5 bg-blue border-right-o d-flex align-items-center justify-content-center py-5 c-box-shadow">
+        <h1 class="login-header text-center">Registreren</h1>
+    </div>
+    <div class="col-md-5 bg-grey p-5 c-box-shadow">
+        Maak een account aan als
+        <div class="mt-2 mb-4">
+            <a class="btn btn-blue btn-big w-100 mb-2" asp-controller="Account" asp-action="RegisterStudent">Student</a>
+            <a class="btn btn-blue btn-big w-100" asp-controller="Account" asp-action="RegisterCanteenEmployee">Kantine medewerker</a>
+        </div>
+        Al een account? <a class="blue-text link-hover" asp-controller="Account" asp-action="Login"><b>Log hier in!</b></a>
+    </div>
+</div>

@@ -7,51 +7,43 @@
         {
             _context = context;
         }
+
         public async Task<Packet> GetPacketByIdAsync(int packetId)
         {
             var packet = await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).FirstOrDefaultAsync(p => p.PacketId == packetId);
 
             if (packet != null)
-            {
                 return packet;
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+
+            throw new KeyNotFoundException();
         }
 
-        public async Task<IEnumerable<Packet>> GetPacketsAsync() => await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).ToListAsync();
+        public async Task<IEnumerable<Packet>> GetPacketsAsync() => await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).OrderBy(p => p.PickUpDateTime).ToListAsync();
 
         public async Task<Packet> CreatePacketAsync(Packet packet)
         {
-            var newPacket = await _context.Packets.AddAsync(packet);
-
-            if (newPacket != null)
+            if (packet != null)
             {
+                await _context.Packets.AddAsync(packet);
                 await _context.SaveChangesAsync();
                 return packet;
             }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+            
+            throw new InvalidOperationException();
         }
 
-        public async Task<bool> UpdatePacketAsync(Packet newPacket)
+        public async Task<bool> UpdatePacketAsync(int packetId)
         {
-            var packet = _context.Packets.Update(newPacket);
+            var packet = await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).FirstOrDefaultAsync(p => p.PacketId == packetId);
 
             if (packet != null)
             {
+                _context.Attach(packet).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return true;
             }
-            else
-            {
-                return false;
-            }
 
+            return false;
         }
         public async Task<bool> DeletePacketAsync(int packetId)
         {
@@ -63,10 +55,8 @@
                 await _context.SaveChangesAsync();
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }

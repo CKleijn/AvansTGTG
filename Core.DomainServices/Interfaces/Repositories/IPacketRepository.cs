@@ -5,7 +5,7 @@
         Task<Packet> GetPacketByIdAsync(int packetId);
         Task<IEnumerable<Packet>> GetPacketsAsync();
         Task<Packet> CreatePacketAsync(Packet packet);
-        Task<bool> UpdatePacketAsync(Packet newPacket);
+        Task<bool> UpdatePacketAsync(int packetId);
         Task<bool> DeletePacketAsync(int packetId);
     }
 }

@@ -12,13 +12,9 @@
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Name == name);
 
             if (product != null)
-            {
                 return product;
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            
+            throw new KeyNotFoundException();
         }
         public async Task<IEnumerable<Product>> GetProductsAsync() => await _context.Products.ToListAsync();
     }

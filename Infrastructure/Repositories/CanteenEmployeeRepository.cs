@@ -13,13 +13,9 @@
             var canteenEmployee = await _context.CanteenEmployees.FirstOrDefaultAsync(c => c.EmployeeNumber == employeeNumber);
 
             if (canteenEmployee != null)
-            {
                 return canteenEmployee;
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            
+            throw new KeyNotFoundException();
         }
 
         public async Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee)

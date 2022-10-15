@@ -12,27 +12,32 @@ namespace Portal.Controllers
             _packetService = packetService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var user = User.Identity?.Name;
+            var user = User.Identity?.Name!;
             var isStudent = User.HasClaim("Role", "Student");
             var isCanteenEmployee = User.HasClaim("Role", "CanteenEmployee");
+
+            var allAvailablePackets = await _packetService.GetAllAvailablePacketsAsync();
 
             var model = new HomeViewModel()
             {
                 Student = isStudent,
                 CanteenEmployee = isCanteenEmployee,
-                AllPackets = await _packetService.GetPacketsAsync()
+                AllPackets = allAvailablePackets.Take(4)
             };
 
-            if(user != null && isCanteenEmployee)
+            if (user != null && isCanteenEmployee)
             {
-                model.AllCanteenPackets = await _packetService.GetMyCanteenOfferedPacketsAsync(user);
+                var allCanteenPackets = await _packetService.GetMyCanteenOfferedPacketsAsync(user);
+                model.AllCanteenPackets = allCanteenPackets.Take(4);
             }
 
             if (user != null && isStudent)
             {
-                model.MyReservedPackets = await _packetService.GetMyReservedPacketsAsync(user);
+                var myReservedPackets = await _packetService.GetMyReservedPacketsAsync(user);
+                model.MyReservedPackets = myReservedPackets.Take(4);
             }
 
             return View(model);

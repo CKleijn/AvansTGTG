@@ -1,1 +1,155 @@
-﻿
+﻿:root {
+    --blue: #1E458A;
+    --orange: #F7903E;
+    --grey: #ECEDEF;
+    --white: #FFFFFF;
+    --black: #000000;
+}
+
+/* START - GENERAL */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--grey) !important;
+    min-height: 100vh !important;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Seaford', sans-serif !important;
+}
+
+h1, h2, h3, h4 {
+    font-weight: bold;
+    color: var(--blue);
+}
+
+h4 {
+    font-size: 1.25rem;
+}
+
+.container {
+    background-color: var(--white) !important;
+}
+
+.head-container {
+    padding: 0 !important;
+}
+
+.bg-blue {
+    background-color: var(--blue) !important;
+}
+
+.bg-grey {
+    background-color: var(--grey) !important;
+}
+
+.white-text {
+    color: var(--white) !important;
+}
+
+.blue-text {
+    color: var(--blue) !important;
+}
+
+.border-blue {
+    border: 3px solid var(--blue) !important;
+}
+
+.border-top-o {
+    border-top: 5px solid var(--orange) !important;
+}
+
+.border-right-o {
+    border-right: 5px solid var(--orange) !important;
+}
+
+.border-bottom-o {
+    border-bottom: 5px solid var(--orange) !important;
+}
+
+.dropdown-menu > a {
+    color: var(--black) !important;
+}
+
+.dropdown-menu > a:hover {
+    background-color: var(--blue) !important;
+    color: var(--white) !important;
+}
+
+.form-control {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 2px solid var(--blue) !important;
+}
+
+.btn-blue {
+    font-family: 'Seaford', sans-serif !important;
+    background-color: var(--blue);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    text-transform: uppercase;
+    border: 3px solid var(--blue);
+}
+
+.btn-big {
+    font-family: 'Seaford', sans-serif !important;
+    font-size: 20px !important;
+}
+
+.btn-blue:hover {
+    background-color: transparent;
+    color: var(--blue);
+}
+
+.btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none;
+}
+
+.alert {
+    padding: 10px 0px 0px 0px !important;
+}
+
+.mr-2 {
+    margin-right: 2rem;
+}
+
+.ml-2 {
+    margin-left: 2rem;
+}
+
+.ch-100 {
+    height: 500px !important;
+}
+
+.c-box-shadow {
+    box-shadow: 5px 5px 10px 0px rgba(97,97,97,1);
+}
+
+.img-contain {
+    object-fit: contain;
+}
+/* END - GENERAL */
+/* START - LOGIN */
+.login-header {
+    font-size: 60px;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.link-hover:hover {
+    color: var(--orange) !important;
+}
+/* END - LOGIN */
+/* START - CARDS */
+.card {
+    border: 3px solid var(--blue);
+    box-shadow: 5px 5px 10px 0px rgba(97,97,97,1);
+}
+
+.card-img-top {
+    border-bottom: 3px solid var(--blue);
+    height: 200px;
+    object-fit: contain;
+}
+/* END - CARDS */

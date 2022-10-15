@@ -2,8 +2,13 @@
 using Core.DomainServices.Interfaces.Services;
 using Core.DomainServices.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Portal.Models;
+using System.Globalization;
+using System.Net.Sockets;
+using System.Reflection;
 
 namespace Portal.Controllers
 {
@@ -11,46 +16,31 @@ namespace Portal.Controllers
     {
         private readonly IPacketService _packetService;
         private readonly IProductService _productService;
-        public PacketController(IPacketService packetService, IProductService productService)
+        private readonly IStudentService _studentService;
+        private readonly ICanteenEmployeeService _canteenEmployeeService;
+        private readonly ICanteenService _canteenService;
+        public PacketController(IPacketService packetService, IProductService productService, IStudentService studentService, ICanteenEmployeeService canteenEmployeeService, ICanteenService canteenService)
         {
             _packetService = packetService;
             _productService = productService;
+            _studentService = studentService;
+            _canteenEmployeeService = canteenEmployeeService;
+            _canteenService = canteenService;
         }
-        public async Task<IActionResult> AllPackets()
-        {
-            return View(await _packetService.GetPacketsAsync());
-        }
+
+        [HttpGet]
+        public async Task<IActionResult> AllPackets() => View(await _packetService.GetAllAvailablePacketsAsync());
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
-        public async Task<IActionResult> AllCanteenPackets()
-        {
-            var user = User.Identity?.Name;
-
-            if(user != null)
-            {
-                return View(await _packetService.GetMyCanteenOfferedPacketsAsync(user));
-            }
-
-            return View();
-        }
+        [HttpGet]
+        public async Task<IActionResult> AllCanteenPackets() => View(await _packetService.GetMyCanteenOfferedPacketsAsync(User.Identity?.Name!));
 
         [Authorize(Policy = "StudentOnly")]
-        public async Task<IActionResult> MyReservedPackets()
-        {
-            var user = User.Identity?.Name;
+        [HttpGet]
+        public async Task<IActionResult> MyReservedPackets() => View(await _packetService.GetMyReservedPacketsAsync(User.Identity?.Name!));
 
-            if (user != null)
-            {
-                return View(await _packetService.GetMyReservedPacketsAsync(user));
-            }
-
-            return View();
-        }
-
-        public async Task<IActionResult> Detail(int id)
-        {
-            return View(await _packetService.GetPacketByIdAsync(id));
-        }
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id) => View(FormatPacket(await _packetService.GetPacketByIdAsync(id)));
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
         [HttpGet]
@@ -58,7 +48,7 @@ namespace Portal.Controllers
         {
             var model = new PacketViewModel()
             {
-                AllProducts = await GetAllProducts()
+                AllProducts = await _productService.GetAllProductsInSelectListAsync()
             };
 
             return View(model);
@@ -68,76 +58,61 @@ namespace Portal.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePacket(PacketViewModel packetViewModel)
         {
-            var user = User.Identity?.Name;
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(User.Identity?.Name!);
 
-            if (user != null)
+            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location!);
+
+            if (packetViewModel.SelectedProducts?.Count == 0)
+                ModelState.AddModelError("NoProductsSelected", "Producten zijn verplicht!");
+
+            if (packetViewModel.Packet.PickUpDateTime < DateTime.Now || packetViewModel.Packet.PickUpDateTime > packetViewModel.Packet.LatestPickUpTime)
+                ModelState.AddModelError("DateNotPossible", "Deze datum en/of tijd is onmogelijk!");
+
+            if(packetViewModel.Packet.PickUpDateTime > DateTime.Now.AddDays(2))
+                ModelState.AddModelError("DateToLate", "Je mag maar maximaal 2 dagen vooruit plannen!");
+
+            if (packetViewModel.Packet.MealType != null)
+                if ((int) packetViewModel.Packet.MealType! == 4 && canteen.OfferingHotMeals == false)
+                    ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
+
+            if (ModelState.IsValid)
             {
-                if(packetViewModel.Packet.PickUpDateTime < DateTime.Now || packetViewModel.Packet.PickUpDateTime > packetViewModel.Packet.LatestPickUpTime)
-                {
-                    ModelState.AddModelError("DateNotPossible", "Deze datum en/of tijd is onmogelijk!");
-                }
+                var newPacket = await _packetService.CreatePacketAsync(packetViewModel.Packet, User.Identity?.Name!, packetViewModel.SelectedProducts!);
+                return RedirectToAction("Detail", new { id = newPacket.PacketId });
+            } 
 
-                if (packetViewModel.SelectedProducts.Count == 0)
-                {
-                    ModelState.AddModelError("NoProductsSelected", "Producten zijn verplicht!");
-                }
+            var model = new PacketViewModel()
+            {
+                AllProducts = await _productService.GetAllProductsInSelectListAsync(),
+                SelectedProducts = packetViewModel.SelectedProducts
+            };
 
-                if (ModelState.IsValid)
-                {
-                    var newPacket = await _packetService.CreatePacketAsync(packetViewModel.Packet, user, packetViewModel.SelectedProducts);
-
-                    if (newPacket != null)
-                    {
-                        return RedirectToAction("Detail", new { id = newPacket.PacketId });
-                    }
-                } 
-                else
-                {
-                    var model = new PacketViewModel()
-                    {
-                        AllProducts = await GetAllProducts(),
-                        SelectedProducts = packetViewModel.SelectedProducts
-                    };
-
-                    return View(model);
-                }
-            }
-
-            return View();
+            return View(model);
         }
 
         [Authorize(Policy = "StudentOnly")]
         [HttpPost]
         public async Task<IActionResult> ReservePacket(int id)
         {
-            var user = User.Identity?.Name;
+            var packet = await _packetService.GetPacketByIdAsync(id);
 
-            if (user != null)
-            {
-                if (ModelState.IsValid)
-                {
-                    var packet = await _packetService.GetPacketByIdAsync(id);
+            var student = await _studentService.GetStudentByStudentNumberAsync(User.Identity!.Name!);
 
-                    if(packet != null)
-                    {
-                        if (packet.ReservedBy == null)
-                        {
-                            var isReserved = await _packetService.ReservePacketAsync(id, user);
+            if ((bool) packet?.IsEightteenPlusPacket! && (packet?.PickUpDateTime - student?.DateOfBirth)!.Value.TotalDays < (365 * 18))
+                ModelState.AddModelError("NotEighteen", "Je kan dit pakket niet reserveren, omdat dit pakket 18+ producten bevat!");
 
-                            if (isReserved)
-                            {
-                                return RedirectToAction("MyReservedPackets", "Packet");
-                            }
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet reserveren, omdat deze al gereserveerd is door een andere student!");
-                        }
-                    }
-                }
-            }
+            if (packet?.ReservedBy != null)
+                ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet reserveren, omdat deze al gereserveerd is door een andere student!");
 
-            return RedirectToAction("Detail", new { id = id });
+            if(await _packetService.CheckReservedPickUpDate(student!, packet!))
+                ModelState.AddModelError("AlreadyHaveReservedPacket", "Je kan dit pakket niet reserveren, omdat je al meer dan 1 pakket op deze afhaaldatum hebt!");
+
+            if (ModelState.IsValid)
+                if ((bool) packet?.IsEightteenPlusPacket! && (packet?.PickUpDateTime - student?.DateOfBirth)!.Value.TotalDays > (365 * 18) || (bool) !packet?.IsEightteenPlusPacket!)
+                    if (await _packetService.ReservePacketAsync(id, User.Identity!.Name!))
+                        return RedirectToAction("MyReservedPackets", "Packet");
+
+            return View("Detail", FormatPacket(packet!));
         }
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
@@ -146,112 +121,103 @@ namespace Portal.Controllers
         {
             var packet = await _packetService.GetPacketByIdAsync(id);
 
-            var products = new List<string>();
-
-            foreach(var product in packet.Products)
-            {
-                products.Add(product.Name);
-            }
-
             var model = new PacketViewModel()
             {
                 Packet = packet,
-                AllProducts = await GetAllProducts(),
-                SelectedProducts = products
+                AllProducts = await _productService.GetAllProductsInSelectListAsync(),
+                SelectedProducts = _productService.GetProductsFromPacketInList(packet)
             };
 
             return View(model);
         }
 
-        //[Authorize(Policy = "CanteenEmployeeOnly")]
-        //[HttpPost]
-        //public async Task<IActionResult> UpdatePacket(int id, PacketViewModel packetViewModel)
-        //{
-        //    var user = User.Identity?.Name;
+        [Authorize(Policy = "CanteenEmployeeOnly")]
+        [HttpPost]
+        public async Task<IActionResult> UpdatePacket(int id, PacketViewModel packetViewModel)
+        {
+            var packet = await _packetService.GetPacketByIdAsync(id);
 
-        //    if (user != null)
-        //    {
-        //        if (packetViewModel.Packet.PickUpDateTime < DateTime.Now || packetViewModel.Packet.PickUpDateTime > packetViewModel.Packet.LatestPickUpTime)
-        //        {
-        //            ModelState.AddModelError("DateNotPossible", "Deze datum en/of tijd is onmogelijk!");
-        //        }
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(User.Identity?.Name!);
 
-        //        if (packetViewModel.SelectedProducts.Count == 0)
-        //        {
-        //            ModelState.AddModelError("NoProductsSelected", "Producten zijn verplicht!");
-        //        }
+            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location!);
 
-        //        if (ModelState.IsValid)
-        //        {
-        //            var packet = await _packetService.GetPacketByIdAsync(id);
+            if (packetViewModel.Packet.PickUpDateTime < DateTime.Now || packetViewModel.Packet.PickUpDateTime > packetViewModel.Packet.LatestPickUpTime)
+                ModelState.AddModelError("DateNotPossible", "Deze datum en/of tijd is onmogelijk!");
 
-        //            if (packet.ReservedBy == null)
-        //            {
-        //                var isUpdated = await _packetService.UpdatePacketAsync(id, user, packetViewModel.Packet, packetViewModel.SelectedProducts);
+            if (packetViewModel.SelectedProducts!.Count == 0)
+                ModelState.AddModelError("NoProductsSelected", "Producten zijn verplicht!");
 
-        //                if (isUpdated)
-        //                {
-        //                    return RedirectToAction("Detail", new { id = id });
-        //                }
-        //            }
-        //            else
-        //            {
-        //                ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet bewerken, omdat deze al gereserveerd is!");
-        //            }
-        //        }
-        //    }
+            if (packet.ReservedBy != null)
+                ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet bewerken, omdat deze al gereserveerd is!");
 
-        //    var model = new PacketViewModel()
-        //    {
-        //        Packet = packetViewModel.Packet,
-        //        AllProducts = await GetAllProducts(),
-        //        SelectedProducts = packetViewModel.SelectedProducts
-        //    };
+            if(packetViewModel.Packet.MealType != null)
+                if ((int)packetViewModel.Packet.MealType! == 4 && canteen.OfferingHotMeals == false)
+                    ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
 
-        //    return View(model);
-        //}
+            if (ModelState.IsValid)
+                if (await _packetService.UpdatePacketAsync(id, packetViewModel.Packet, User.Identity?.Name!, packetViewModel.SelectedProducts))
+                    return RedirectToAction("Detail", new { id });
+
+            var model = new PacketViewModel()
+            {
+                Packet = packet,
+                AllProducts = await _productService.GetAllProductsInSelectListAsync(),
+                SelectedProducts = _productService.GetProductsFromPacketInList(packet)
+            };
+
+            return View(model);
+        }
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
         [HttpPost]
         public async Task<IActionResult> DeletePacket(int id)
         {
-            var user = User.Identity?.Name;
+            var packet = await _packetService.GetPacketByIdAsync(id);
 
-            if (user != null)
-            {
-                if(ModelState.IsValid)
-                {
-                    var packet = await _packetService.GetPacketByIdAsync(id);
-                    
-                    if(packet.ReservedBy == null)
-                    {
-                        var isDeleted = await _packetService.DeletePacketAsync(id, user);
+            if (packet?.ReservedBy != null)
+                ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet verwijderen, omdat deze al gereserveerd is!");
 
-                        if (isDeleted)
-                        {
-                            return RedirectToAction("Index", "Home");
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet verwijderen, omdat deze al gereserveerd is!");
-                    }
-                }
-            }
+            if (ModelState.IsValid)
+                if (await _packetService.DeletePacketAsync(id, User.Identity!.Name!))
+                    return RedirectToAction("Index", "Home");
 
-            return RedirectToAction("Detail", new { id = id });
+            return View("Detail", FormatPacket(packet!));
         }
 
-        private async Task<List<SelectListItem>> GetAllProducts()
+        public PacketDetailViewModel FormatPacket(Packet packet)
         {
-            var products = new List<SelectListItem>();
+            var products = new List<ProductViewModel>();
 
-            foreach (var product in await _productService.GetProductsAsync())
+            foreach (var product in packet.Products!)
             {
-                products.Add(new SelectListItem { Text = product.Name, Value = product.Name });
+                var productModel = new ProductViewModel()
+                {
+                    Name = product.Name,
+                    IsAlcoholic = ((bool)product.IsAlcoholic!) ? "Ja" : "Nee",
+                    Picture = @String.Format("data:image/png;base64,{0}", Convert.ToBase64String(product.Picture!))
+                };
+
+                products.Add(productModel);
             }
 
-            return products;
+            var packetModel = new PacketDetailViewModel()
+            {
+                PacketId = packet.PacketId,
+                Name = packet.Name,
+                Products = products,
+                City = packet.City!.GetType().GetMember(packet.City.ToString()!).First().GetCustomAttribute<DisplayAttribute>()!.GetName(),
+                Canteen = packet.Canteen!.Location,
+                PickUpDateTime = new DateTime(packet.PickUpDateTime!.Value.Year, packet.PickUpDateTime!.Value.Month, packet.PickUpDateTime!.Value.Day, packet.PickUpDateTime!.Value.Hour, packet.PickUpDateTime!.Value.Minute, packet.PickUpDateTime!.Value.Second).ToString("dddd d MMMM yyyy HH:mm", new CultureInfo("nl-NL")),
+                LatestPickUpTime = new DateTime(packet.LatestPickUpTime!.Value.Year, packet.LatestPickUpTime!.Value.Month, packet.LatestPickUpTime!.Value.Day, packet.LatestPickUpTime!.Value.Hour, packet.LatestPickUpTime!.Value.Minute, packet.LatestPickUpTime!.Value.Second).ToString("dddd d MMMM yyyy HH:mm", new CultureInfo("nl-NL")),
+                IsEightteenPlusPacket = ((bool)packet.IsEightteenPlusPacket!) ? "(18+)" : "",
+                Price = String.Format("{0:€#,##0.00}", packet.Price),
+                MealType = packet.MealType!.GetType().GetMember(packet.MealType.ToString()!).First().GetCustomAttribute<DisplayAttribute>()!.GetName(),
+                ReservedBy = (packet.ReservedBy != null) ? packet.ReservedBy.Name : "-"
+            };
+
+            ViewData["UserName"] = packet.ReservedBy?.Name;
+
+            return packetModel;
         }
     }
 }
