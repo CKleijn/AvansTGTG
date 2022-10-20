@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221001144242_Initial")]
-    partial class Initial
+    [Migration("20221019184119_Seeding data V1")]
+    partial class SeedingdataV1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,9 +35,8 @@ namespace Infrastructure.Migrations
                     b.Property<int>("City")
                         .HasColumnType("int");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Location")
+                        .HasColumnType("int");
 
                     b.Property<bool?>("OfferingHotMeals")
                         .IsRequired()
@@ -60,9 +59,8 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Location")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -81,14 +79,13 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PacketId"), 1L, 1);
 
-                    b.Property<int>("CanteenId")
+                    b.Property<int?>("CanteenId")
                         .HasColumnType("int");
 
-                    b.Property<int>("City")
+                    b.Property<int?>("City")
                         .HasColumnType("int");
 
                     b.Property<bool?>("IsEightteenPlusPacket")
-                        .IsRequired()
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LatestPickUpTime")
@@ -138,15 +135,10 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PacketId")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("Picture")
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("ProductId");
-
-                    b.HasIndex("PacketId");
 
                     b.ToTable("Products");
                 });
@@ -158,9 +150,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"), 1L, 1);
-
-                    b.Property<int>("AmountOfReports")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .IsRequired()
@@ -190,13 +179,26 @@ namespace Infrastructure.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("PacketProduct", b =>
+                {
+                    b.Property<int>("PacketsPacketId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PacketsPacketId", "ProductsProductId");
+
+                    b.HasIndex("ProductsProductId");
+
+                    b.ToTable("PacketProduct");
+                });
+
             modelBuilder.Entity("Core.Domain.Entities.Packet", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Canteen", "Canteen")
                         .WithMany()
-                        .HasForeignKey("CanteenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CanteenId");
 
                     b.HasOne("Core.Domain.Entities.Student", "ReservedBy")
                         .WithMany()
@@ -207,16 +209,19 @@ namespace Infrastructure.Migrations
                     b.Navigation("ReservedBy");
                 });
 
-            modelBuilder.Entity("Core.Domain.Entities.Product", b =>
+            modelBuilder.Entity("PacketProduct", b =>
                 {
                     b.HasOne("Core.Domain.Entities.Packet", null)
-                        .WithMany("Products")
-                        .HasForeignKey("PacketId");
-                });
+                        .WithMany()
+                        .HasForeignKey("PacketsPacketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("Core.Domain.Entities.Packet", b =>
-                {
-                    b.Navigation("Products");
+                    b.HasOne("Core.Domain.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

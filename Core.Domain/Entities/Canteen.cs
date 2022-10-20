@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Core.Domain.Entities
+﻿namespace Core.Domain.Entities
 {
     public class Canteen
     {
@@ -10,7 +8,7 @@ namespace Core.Domain.Entities
         public Cities? City { get; set; }
         [Required(ErrorMessage = "Locatie is verplicht!")]
         [DisplayName("Kantine")]
-        public string? Location { get; set; }
+        public Location? Location { get; set; }
         [Required(ErrorMessage = "Aangeven ofdat een kantine warme maaltijden verkoopt is verplicht!")]
         public bool? OfferingHotMeals { get; set; }
     }

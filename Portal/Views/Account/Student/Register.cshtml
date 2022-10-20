@@ -1,4 +1,4 @@
-﻿@using Core.Domain.Enums
+﻿@using Portal.Models.AccountVM
 @model StudentRegisterViewModel
 @{
     ViewData["Title"] = "Registreren als student";
@@ -8,12 +8,13 @@
 {
     <div class="row justify-content-center">
         <div class="col-md-10 p-0">
-            <div class="alert alert-danger m-0" role="alert">
+            <div class="alert alert-danger mt-3" role="alert">
                 <div asp-validation-summary="All"></div>
             </div>
         </div>
     </div>
 }
+
 <div class="row justify-content-center my-5">
     <div class="col-md-5 bg-blue border-right-o d-flex align-items-center justify-content-center py-5 c-box-shadow">
         <h1 class="login-header text-center">student</h1>
@@ -30,7 +31,12 @@
             </div>
             <div class="form-group mb-4">
                 <label asp-for="DateOfBirth" class="form-label"></label>
-                <input asp-for="DateOfBirth" type="date" class="form-control" />
+                <div class="input-group">
+                    <input asp-for="DateOfBirth" type="date" class="form-control" />
+                    <div class="input-group-append">
+                        <div class="input-group-text-right"><i class="bi bi-calendar-date"></i></div>
+                    </div>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label asp-for="EmailAddress" class="form-label"></label>
@@ -46,7 +52,7 @@
             </div>
             <div class="form-group mb-4">
                 <label asp-for="StudyCity" class="form-label"></label>
-                <select asp-for="StudyCity" class="form-control" asp-items="Html.GetEnumSelectList<Cities>()">
+                <select asp-for="StudyCity" class="form-control form-select" asp-items="Html.GetEnumSelectList<Cities>()">
                     <option>Kies stad</option>
                 </select>
             </div>

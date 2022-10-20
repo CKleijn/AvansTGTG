@@ -7,9 +7,7 @@
         public string? Name { get; set; }
         [Required(ErrorMessage = "Personeelsnummer is verplicht!")]
         public string? EmployeeNumber { get; set; }
-        [Required(ErrorMessage = "Stad is verplicht!")]
-        public Cities? City { get; set; }
         [Required(ErrorMessage = "Locatie is verplicht!")]
-        public string? Location { get; set; }
+        public Location? Location { get; set; }
     }
 }

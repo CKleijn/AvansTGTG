@@ -1,9 +1,4 @@
-﻿using Core.Domain.Entities;
-using Core.Domain.Enums;
-using Core.DomainServices.Interfaces.Services;
-using System.Net.Sockets;
-
-namespace Core.DomainServices.Services
+﻿namespace Core.DomainServices.Services
 {
     public class PacketService : IPacketService
     {
@@ -44,7 +39,7 @@ namespace Core.DomainServices.Services
         {
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location!);
+            var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
 
             var allPackets = await _packetRepository.GetPacketsAsync();
 
@@ -66,7 +61,7 @@ namespace Core.DomainServices.Services
 
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-            var canteen = await _canteenService.GetCanteenByLocationAsync(canteenEmployee.Location!);
+            var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
 
             packet.Products = productList.productList;
             packet.IsEightteenPlusPacket = productList.containsAlchohol;

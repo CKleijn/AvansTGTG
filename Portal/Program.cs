@@ -10,16 +10,6 @@ builder.Services.AddDbContext<SecurityDbContext>(options => options.UseSqlServer
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<SecurityDbContext>().AddDefaultTokenProviders();
 
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredUniqueChars = 1;
-    options.Password.RequireDigit = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireLowercase = true;
-});
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("StudentOnly", policy => policy.RequireClaim("Role", "Student"));
@@ -61,7 +51,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Packet}/{action=Index}/{id?}");
 
 app.Run();
 

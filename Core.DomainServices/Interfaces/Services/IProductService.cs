@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace Core.DomainServices.Interfaces.Services
+﻿namespace Core.DomainServices.Interfaces.Services
 {
     public interface IProductService
     {
