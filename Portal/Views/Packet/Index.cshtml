@@ -1,0 +1,135 @@
+﻿@using Portal.Models.PacketVM
+@model PacketOverviewViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="row mt-0 mb-3">
+    <div class="col-md-12 border-bottom-o" align="center">
+        <img src="~/img/CanteenBanner.png" alt="Banner" />
+    </div>
+</div>
+
+<div class="p-3">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h3>Waarom deze website?</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada rhoncus volutpat. Integer tempor risus ut ipsum pharetra consectetur. Etiam sit amet dolor vel nibh fermentum auctor eget at nulla. Nulla facilisi. Mauris eu dui at eros sagittis euismod sit amet non nibh. Vestibulum semper mollis accumsan. Curabitur arcu ex, dictum eu neque sed, volutpat consequat mauris. Pellentesque magna eros, sodales vitae laoreet vitae, ultrices et sapien. </p>
+        </div>
+        <div class="col-md-6">
+            <h3>Hoe werkt het?</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada rhoncus volutpat. Integer tempor risus ut ipsum pharetra consectetur. Etiam sit amet dolor vel nibh fermentum auctor eget at nulla. Nulla facilisi. Mauris eu dui at eros sagittis euismod sit amet non nibh. Vestibulum semper mollis accumsan. Curabitur arcu ex, dictum eu neque sed, volutpat consequat mauris. Pellentesque magna eros, sodales vitae laoreet vitae, ultrices et sapien. </p>
+        </div>
+    </div>
+
+    @if (Model.AllPackets!.Any())
+    {
+        <h3>Alle pakketten</h3>
+        <div class="row">
+            @foreach (var packet in Model.AllPackets!)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
+                        <div class="position-absolute top-0 start-0 price-tag c-f-size">
+                            <span class="blue-text">@packet.Price</span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
+                            @packet.PickUpDateTime
+                            <div class="d-flex justify-content-between w-100 mt-3">
+                                @if (Model.User!.IsStudent || !Model.User!.IsStudent && !Model.User!.IsCanteenEmployee)
+                                {
+                                    <a class="btn btn-blue w-100 me-2" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                                    <form class="w-100" asp-controller="Packet" asp-action="ReservePacket" asp-route-id="@packet.PacketId" method="post">
+                                        <button class="btn btn-blue w-100" type="submit">Reserveer</button>
+                                    </form>
+                                }
+                                else if (Model.User!.IsCanteenEmployee)
+                                {
+                                    <a class="btn btn-blue w-100" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <a class="mb-5 blue-text" asp-controller="Packet" asp-action="AllPackets">Bekijk hier alle pakketten</a>
+        </div>
+    }
+
+    @if (Model.User!.IsStudent && Model.MyReservedPackets!.Any())
+    {
+        <h3>Mijn gereserveerde pakketten</h3>
+        <div class="row">
+            @foreach (var packet in Model.MyReservedPackets!)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
+                        <div class="position-absolute top-0 start-0 price-tag c-f-size">
+                            <span class="blue-text">@packet.Price</span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
+                            @packet.PickUpDateTime
+                            <div class="d-flex justify-content-between w-100 mt-3">
+                                <a class="btn btn-blue w-100" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <a class="mb-5 blue-text" asp-controller="Packet" asp-action="MyReservedPackets">Bekijk hier al mijn gereserveerde pakketten</a>
+        </div>
+    }
+    else if (Model.User!.IsCanteenEmployee && Model.AllCanteenPackets!.Any())
+    {
+        <h3>Alle kantine pakketten</h3>
+        <div class="row">
+            @foreach (var packet in Model.AllCanteenPackets!)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
+                        <div class="position-absolute top-0 start-0 price-tag c-f-size">
+                            <span class="blue-text">@packet.Price</span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
+                            @packet.PickUpDateTime
+                            <div class="mt-3">
+                                <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                                <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="UpdatePacket" asp-route-id="@packet.PacketId">Bewerken</a>
+                                <button data-toggle="modal" data-target="#deleteModal_@packet.PacketId" type="button" class="btn btn-blue w-100">Verwijderen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteModal_@packet.PacketId" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Verwijderen</h5>
+                            </div>
+                            <div class="modal-body">
+                                Weet je zeker dat je @packet.Name wilt verwijderen?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-blue" data-dismiss="modal">Annuleren</button>
+                                <form asp-controller="Packet" asp-action="DeletePacket" asp-route-id="@packet.PacketId" method="post">
+                                    <button class="btn btn-blue" type="submit">Verwijderen</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <a class="mb-5 blue-text" asp-controller="Packet" asp-action="AllCanteenPackets">Bekijk hier al mijn kantine pakketten</a>
+        </div>
+    }
+</div>

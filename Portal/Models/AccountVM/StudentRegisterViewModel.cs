@@ -1,6 +1,6 @@
 ﻿using Core.Domain.Enums;
 
-namespace Portal.Models
+namespace Portal.Models.AccountVM
 {
     public class StudentRegisterViewModel
     {

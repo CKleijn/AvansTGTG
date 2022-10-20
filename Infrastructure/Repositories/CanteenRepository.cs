@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Repositories
+﻿using Core.Domain.Enums;
+
+namespace Infrastructure.Repositories
 {
     public class CanteenRepository : ICanteenRepository
     {
@@ -7,7 +9,7 @@
         {
             _context = context;
         }
-        public async Task<Canteen> GetCanteenByLocationAsync(string canteenLocation)
+        public async Task<Canteen> GetCanteenByLocationAsync(Location canteenLocation)
         {
             var canteen = await _context.Canteens.FirstOrDefaultAsync(c => c.Location == canteenLocation);
 

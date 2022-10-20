@@ -1,7 +1,4 @@
-﻿using Core.DomainServices.Interfaces.Services;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace Core.DomainServices.Services
+﻿namespace Core.DomainServices.Services
 {
     public class ProductService : IProductService
     {
@@ -12,15 +9,9 @@ namespace Core.DomainServices.Services
             _productRepository = productRepository;
         }
 
-        public async Task<Product> GetProductByNameAsync(string name)
-        {
-            return await _productRepository.GetProductByNameAsync(name);
-        }
+        public async Task<Product> GetProductByNameAsync(string name) => await _productRepository.GetProductByNameAsync(name);
 
-        public async Task<IEnumerable<Product>> GetProductsAsync()
-        {
-            return await _productRepository.GetProductsAsync();
-        }
+        public async Task<IEnumerable<Product>> GetProductsAsync() => await _productRepository.GetProductsAsync();
 
         public async Task<List<SelectListItem>> GetAllProductsInSelectListAsync()
         {

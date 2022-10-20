@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Core.Domain.Entities
+﻿namespace Core.Domain.Entities
 {
     public class Packet
     {
@@ -8,13 +6,10 @@ namespace Core.Domain.Entities
         [Required(ErrorMessage = "Naam is verplicht!")]
         [DisplayName("Naam")]
         public string? Name { get; set; }
-        //[Required(ErrorMessage = "Producten zijn verplicht!")]
         [DisplayName("Producten")]
         public ICollection<Product>? Products { get; set; }
-        //[Required(ErrorMessage = "Stad is verplicht!")]
         [DisplayName("Stad")]
         public Cities? City { get; set; }
-        //[Required(ErrorMessage = "Kantine is verplicht!")]
         [DisplayName("Kantine")]
         public Canteen? Canteen { get; set; }
         [Required(ErrorMessage = "Ophaaldatum en tijdstip is verplicht!")]
@@ -23,7 +18,6 @@ namespace Core.Domain.Entities
         [Required(ErrorMessage = "Uiterlijke ophaal tijdstip is verplicht!")]
         [DisplayName("Uiterlijke ophaaldatum en tijdstip")]
         public DateTime? LatestPickUpTime { get; set; }
-        //[Required(ErrorMessage = "Het aangeven van ofdat het pakket 18+ is is verplicht!")]
         [DisplayName("18+")]
         public bool? IsEightteenPlusPacket { get; set; }
         [Required(ErrorMessage = "Prijs is verplicht!")]

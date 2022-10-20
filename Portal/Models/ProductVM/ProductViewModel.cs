@@ -1,4 +1,4 @@
-﻿namespace Portal.Models
+﻿namespace Portal.Models.ProductVM
 {
     public class ProductViewModel
     {

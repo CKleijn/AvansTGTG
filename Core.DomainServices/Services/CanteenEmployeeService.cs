@@ -8,14 +8,8 @@
         {
             _canteenEmployeeRepository = canteenEmployeeRepository;
         }
-        public async Task<CanteenEmployee> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber)
-        {
-            return await _canteenEmployeeRepository.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
-        }
+        public async Task<CanteenEmployee> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber) => await _canteenEmployeeRepository.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-        public async Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee)
-        {
-            await _canteenEmployeeRepository.CreateCanteenEmployeeAsync(CanteenEmployee);
-        }
+        public async Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee) => await _canteenEmployeeRepository.CreateCanteenEmployeeAsync(CanteenEmployee);
     }
 }

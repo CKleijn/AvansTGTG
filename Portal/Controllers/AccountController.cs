@@ -1,9 +1,8 @@
 ﻿using Core.DomainServices.Interfaces.Services;
-using Portal.Models;
+using Portal.Models.AccountVM;
 
 namespace Portal.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private UserManager<IdentityUser> _userManager;
@@ -24,11 +23,9 @@ namespace Portal.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Login() => View();
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
             if(ModelState.IsValid)
@@ -39,7 +36,7 @@ namespace Portal.Controllers
                 {
                     await _signInManager.SignOutAsync();
                     if ((await _signInManager.PasswordSignInAsync(user!, loginModel.Password, false, false)).Succeeded)
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Packet");
 
                     ModelState.AddModelError("WrongPassword", "Wachtwoord is onjuist!");
                 }
@@ -53,25 +50,40 @@ namespace Portal.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Packet");
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Register() => View();
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult RegisterStudent() => View("Student/Register");
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> RegisterStudent(StudentRegisterViewModel studentRegisterViewModel)
         {
-            if(ModelState.IsValid)
+            if (studentRegisterViewModel.DateOfBirth > DateTime.Now)
+                ModelState.AddModelError("DateNotPossible", "Deze datum is onmogelijk!");
+
+            if (studentRegisterViewModel.DateOfBirth > DateTime.Now.AddYears(-16))
+                ModelState.AddModelError("AgeUnder16", "Je moet 16 jaar of ouder zijn voor een account!");
+
+            if (studentRegisterViewModel.Password?.Length < 8)
+                ModelState.AddModelError("PasswordToShort", "Het wachtwoord moet minimaal 8 tekens bevatten!");
+
+            if(studentRegisterViewModel.Password != null)
+                if (!studentRegisterViewModel.Password!.Any(c => char.IsUpper(c)))
+                    ModelState.AddModelError("PasswordNoUpper", "Het wachtwoord moet minimaal 1 hoofdletter bevatten");
+
+            if (studentRegisterViewModel.Password != null)
+                if (!studentRegisterViewModel.Password!.Any(c => char.IsNumber(c)))
+                    ModelState.AddModelError("PasswordNoNumber", "Het wachtwoord moet minimaal 1 cijfer bevatten");
+
+            if (ModelState.IsValid)
             {
                 var user = new IdentityUser
                 {
@@ -96,7 +108,7 @@ namespace Portal.Controllers
                 {
                     await _studentService.CreateStudentAsync(student);
                     await _signInManager.PasswordSignInAsync(user, studentRegisterViewModel.Password, false, false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Packet");
                 }
                 else
                 {
@@ -108,13 +120,22 @@ namespace Portal.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult RegisterCanteenEmployee() => View("CanteenEmployee/Register");
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> RegisterCanteenEmployee(CanteenEmployeeRegisterViewModel canteenEmployeeRegisterViewModel)
         {
+            if (canteenEmployeeRegisterViewModel.Password?.Length < 8)
+                ModelState.AddModelError("PasswordToShort", "Het wachtwoord moet minimaal 8 tekens bevatten!");
+
+            if (canteenEmployeeRegisterViewModel.Password != null)
+                if (!canteenEmployeeRegisterViewModel.Password!.Any(c => char.IsUpper(c)))
+                    ModelState.AddModelError("PasswordNoUpper", "Het wachtwoord moet minimaal 1 hoofdletter bevatten");
+
+            if (canteenEmployeeRegisterViewModel.Password != null)
+                if (!canteenEmployeeRegisterViewModel.Password!.Any(c => char.IsNumber(c)))
+                    ModelState.AddModelError("PasswordNoNumber", "Het wachtwoord moet minimaal 1 cijfer bevatten");
+
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser
@@ -125,20 +146,20 @@ namespace Portal.Controllers
 
                 var result = await _userManager.CreateAsync(user, canteenEmployeeRegisterViewModel.Password);
                 await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "CanteenEmployee"));
+                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Location", canteenEmployeeRegisterViewModel.Location.ToString()!));
 
                 var canteenEmployee = new CanteenEmployee
                 {
                     Name = $"{canteenEmployeeRegisterViewModel.FirstName} {canteenEmployeeRegisterViewModel.LastName}",
                     EmployeeNumber = canteenEmployeeRegisterViewModel.EmployeeNumber,
-                    City = canteenEmployeeRegisterViewModel.City,
-                    Location = canteenEmployeeRegisterViewModel.Canteen
+                    Location = canteenEmployeeRegisterViewModel.Location
                 };
 
                 if (result.Succeeded)
                 {
                     await _canteenEmployeeService.CreateCanteenEmployeeAsync(canteenEmployee);
                     await _signInManager.PasswordSignInAsync(user, canteenEmployeeRegisterViewModel.Password, false, false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Packet");
                 } 
                 else
                 {

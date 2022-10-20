@@ -76,9 +76,26 @@ h4 {
 }
 
 .form-control {
-    margin-bottom: 15px;
     padding: 10px;
     border: 2px solid var(--blue) !important;
+}
+
+.input-group-text-right {
+    border: 2px solid var(--blue) !important;
+    border-right: none !important;
+    background-color: var(--blue);
+    color: var(--white);
+    padding: 10px;
+    border-radius: 0px 4px 4px 0px;
+}
+
+.input-group-text-left {
+    border: 2px solid var(--blue) !important;
+    border-right: none !important;
+    background-color: var(--blue);
+    color: var(--white);
+    padding: 10px;
+    border-radius: 4px 0px 0px 4px;
 }
 
 .btn-blue {
@@ -101,7 +118,7 @@ h4 {
     color: var(--blue);
 }
 
-.btn:focus, .btn:active {
+.btn:focus, .btn:active, .form-control:focus {
     outline: none !important;
     box-shadow: none;
 }
@@ -126,7 +143,33 @@ h4 {
     box-shadow: 5px 5px 10px 0px rgba(97,97,97,1);
 }
 
+img {
+    pointer-events: none;
+}
+
 .img-contain {
+    object-fit: contain;
+}
+
+.price-tag {
+    border-right: 3px solid var(--blue) !important;
+    border-bottom: 3px solid var(--blue) !important;
+    padding: 5px;
+    font-size: 30px;
+    z-index: 2;
+    background-color: var(--white);
+}
+
+.c-f-size {
+    font-size: 22px !important;
+}
+
+.nav {
+    margin: 0px !important;
+}
+
+.detail-img {
+    height: 400px;
     object-fit: contain;
 }
 /* END - GENERAL */
@@ -151,5 +194,9 @@ h4 {
     border-bottom: 3px solid var(--blue);
     height: 200px;
     object-fit: contain;
+}
+
+.card-body {
+    font-size: 14px;
 }
 /* END - CARDS */
