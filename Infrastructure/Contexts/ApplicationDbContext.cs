@@ -82,7 +82,7 @@ namespace Infrastructure.Contexts
                     ProductId = 1,
                     Name = "Glaasje melk",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://howtodrawforkids.com/wp-content/uploads/2021/12/how-to-draw-cartoon-milk.jpg")
+                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/sticker-glass-orange-juice-white-background_1308-62908.jpg")
                 },
                 new Product
                 {
