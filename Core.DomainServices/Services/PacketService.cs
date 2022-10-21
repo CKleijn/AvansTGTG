@@ -39,12 +39,11 @@
         {
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-            //var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
+            var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
 
             var allPackets = await _packetRepository.GetPacketsAsync();
 
-            //return allPackets.Where(p => p.Canteen == canteen);
-            return allPackets;
+            return allPackets.Where(p => p.Canteen == canteen);
         }
 
         public async Task<IEnumerable<Packet>> GetMyReservedPacketsAsync(string studentNumber)
