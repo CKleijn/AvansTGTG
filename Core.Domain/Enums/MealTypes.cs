@@ -11,6 +11,10 @@
         [Display(Name = "Soep")]
         Soup,
         [Display(Name = "Warme Maaltijd")]
-        WarmDinner
+        WarmDinner,
+        [Display(Name = "Fruit")]
+        Fruit,
+        [Display(Name = "Toetje")]
+        Dessert
     }
 }
