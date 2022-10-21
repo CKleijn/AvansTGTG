@@ -101,7 +101,7 @@ namespace Portal.Controllers
 
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(user.UserName!);
 
-            var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
+            //var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
 
             if (packetViewModel.SelectedProducts?.Count == 0)
                 ModelState.AddModelError("NoProductsSelected", "Producten zijn verplicht!");
@@ -112,9 +112,9 @@ namespace Portal.Controllers
             if(packetViewModel.Packet.PickUpDateTime > DateTime.Now.AddDays(2))
                 ModelState.AddModelError("DateToLate", "Je mag maar maximaal 2 dagen vooruit plannen!");
 
-            if (packetViewModel.Packet.MealType != null)
-                if ((int) packetViewModel.Packet.MealType! == 4 && canteen.OfferingHotMeals == false)
-                    ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
+            //if (packetViewModel.Packet.MealType != null)
+            //    if ((int) packetViewModel.Packet.MealType! == 4 && canteen.OfferingHotMeals == false)
+            //        ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
 
             if (ModelState.IsValid)
             {
