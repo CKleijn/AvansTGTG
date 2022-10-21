@@ -1,0 +1,153 @@
+﻿@using Portal.Models.PacketVM
+@model PacketDetailViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="alert alert-danger mx-3 mt-3" role="alert">
+                <div asp-validation-summary="All"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row mx-3 mt-3">
+    <div class="col-md-4 d-flex justify-content-center align-items-center border-blue ch-100 position-relative">
+        <div class="position-absolute top-0 start-0 price-tag">
+            <span class="blue-text">@Model.Price</span>
+        </div>
+        @if(Model.Products?.Count > 1) 
+        {
+            <div id="carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach (var product in Model.Products!)
+                    {
+                        <div class="carousel-item @(product == Model.Products.First() ? "active" : "")">
+                            <img class="d-block w-100 detail-img" src="@product.Picture" alt="@product.Name">
+                        </div>
+                    }
+                </div>
+                <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                    <span class="blue-text" aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                </a>
+                <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                    <span class="blue-text" aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                </a>
+            </div>
+        }
+        else 
+        {
+            <img class="d-block w-100" src="@Model.Products?.First().Picture" alt="@Model.Products?.First().Name">
+        }
+    </div>
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex">
+                    <h1>@Model.Name @Model.IsEightteenPlusPacket</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <table>
+                    <tr>
+                        <th><b class="blue-text">Maaltijd type: </b></th>
+                    </tr>
+                    <tr>
+                        <td>@Model.MealType</td>
+                    </tr>
+                    <tr>
+                        <th><b class="blue-text">Afhaaldatum en tijd: </b></th>
+                    </tr>
+                    <tr>
+                        <td>@Model.PickUpDateTime</td>
+                    </tr>
+                    <tr>
+                        <th><b class="blue-text">Uiterlijke afhaaldatum en tijd: </b></th>
+                    </tr>
+                    <tr>
+                        <td>@Model.LatestPickUpTime</td>
+                    </tr>
+                    <tr>
+                        <th><b class="blue-text">Kantine stad: </b></th>
+                    </tr>
+                    <tr>
+                        <td>@Model.City</td>
+                    </tr>
+                    <tr>
+                        <th><b class="blue-text">Kantine: </b></th>
+                    </tr>
+                    <tr>
+                        <td>@Model.Canteen</td>
+                    </tr>
+                    <tr>
+                        <th><b class="blue-text">Gereserveerd door: </b></th>
+                    </tr>
+                    <tr>
+                        <td>@Model.ReservedBy</td>
+                    </tr>
+                    <tr>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <td><i class="blue-text">Er is geen garantie dat deze producten in dit pakket zitten!</i></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6><b class="blue-text">Huidige pakket:</b></h6>
+                <table class="mb-4">
+                    <tr>
+                        <th class="border-blue px-2">Product</th>
+                        <th class="border-blue px-2">Bevat alcohol</th>
+                    </tr>
+                    @foreach (var product in Model.Products!)
+                    {
+                        <tr>
+                            <td class="border-blue p-2">@product.Name</td>
+                            <td class="border-blue p-2">@product.IsAlcoholic</td>
+                        </tr>
+                    }
+                </table>
+                @if (Model.User!.IsStudent || !Model.User!.IsStudent && !Model.User!.IsCanteenEmployee)
+                {
+                    if (!Model.ReservedBy!.Equals(Model.StudentName))
+                    {
+                        <form asp-controller="Packet" asp-action="ReservePacket" asp-route-id="@Model.PacketId" method="post">
+                            <button class="btn btn-blue" type="submit">Reserveer</button>
+                        </form>
+                    }
+                }
+                else if (Model.User!.IsCanteenEmployee && Model.User.IsCanteenLocation)
+                {
+                    <a asp-controller="Packet" asp-action="UpdatePacket" asp-route-id="@Model.PacketId" class="btn btn-blue">Bewerken</a>
+                    <button data-toggle="modal" data-target="#deleteModal" type="button" class="btn btn-blue">Verwijderen</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Verwijderen</h5>
+            </div>
+            <div class="modal-body">
+                Weet je zeker dat je @Model.Name wilt verwijderen?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-blue" data-dismiss="modal">Annuleren</button>
+                <form asp-controller="Packet" asp-action="DeletePacket" asp-route-id="@Model.PacketId" method="post">
+                    <button class="btn btn-blue" type="submit">Verwijderen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

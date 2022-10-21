@@ -1,0 +1,78 @@
+﻿@using Portal.Models.PacketVM
+@model PacketViewModel
+@{
+    ViewData["Title"] = "Stel pakket samen";
+}
+
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-10 px-5 mt-4">
+            <div class="alert alert-danger m-0" role="alert">
+                <div asp-validation-summary="All"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10 px-5 py-3">
+        <h1>Stel pakket samen</h1>
+    </div>
+</div>
+<form asp-action="CreatePacket" asp-controller="Packet" method="post">
+    <div class="row justify-content-center">
+        <div class="col-md-5 px-5 pb-2">
+            <div class="form-group mb-4">
+                <label asp-for="Packet.Name" class="form-label"></label>
+                <input asp-for="Packet.Name" class="form-control" />
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.MealType" class="form-label"></label>
+                <select asp-for="Packet.MealType" class="form-control form-select" asp-items="Html.GetEnumSelectList<MealTypes>()">
+                    <option selected disabled>Kies type</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.Price" class="form-label"></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text-left"><i class="bi bi-currency-euro"></i></div>
+                    </div>
+                    <input asp-for="Packet.Price" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.PickUpDateTime" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="Packet.PickUpDateTime" class="form-control" />
+                    <div class="input-group-append">
+                        <div class="input-group-text-right"><i class="bi bi-calendar-date"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Packet.LatestPickUpTime" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="Packet.LatestPickUpTime" class="form-control" />
+                    <div class="input-group-append">
+                        <div class="input-group-text-right"><i class="bi bi-calendar-date"></i></div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-blue btn-big w-100 mt-2">Aanmaken</button>
+        </div>
+        <div class="col-md-5 px-5">
+            <div class="form-group mb-4">
+                <label asp-for="Packet.Products" class="form-label"></label>
+                @foreach (var product in Model.AllProducts!)
+                {
+                    <div class="checkbox">
+                        <input type="checkbox" name="SelectedProducts" value="@product.Value" @(Model.SelectedProducts!.Contains(product.Value) ? "checked" : "") />
+                        @product.Text
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</form>
