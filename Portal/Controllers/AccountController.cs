@@ -36,7 +36,7 @@ namespace Portal.Controllers
                 {
                     await _signInManager.SignOutAsync();
                     if ((await _signInManager.PasswordSignInAsync(user!, loginModel.Password, false, false)).Succeeded)
-                        return RedirectToAction("AllPackets", "Packet");
+                        return RedirectToAction("Index", "Packet");
 
                     ModelState.AddModelError("WrongPassword", "Wachtwoord is onjuist!");
                 }
@@ -108,7 +108,7 @@ namespace Portal.Controllers
                 {
                     await _studentService.CreateStudentAsync(student);
                     await _signInManager.PasswordSignInAsync(user, studentRegisterViewModel.Password, false, false);
-                    return RedirectToAction("AllPackets", "Packet");
+                    return RedirectToAction("Index", "Packet");
                 }
                 else
                 {
@@ -159,7 +159,7 @@ namespace Portal.Controllers
                 {
                     await _canteenEmployeeService.CreateCanteenEmployeeAsync(canteenEmployee);
                     await _signInManager.PasswordSignInAsync(user, canteenEmployeeRegisterViewModel.Password, false, false);
-                    return RedirectToAction("AllPackets", "Packet");
+                    return RedirectToAction("Index", "Packet");
                 } 
                 else
                 {
