@@ -42,6 +42,12 @@ h4 {
     background-color: var(--grey) !important;
 }
 
+.bi-arrow-left {
+    font-size: 28px !important;
+    color: var(--blue);
+    cursor: pointer;
+}
+
 .white-text {
     color: var(--white) !important;
 }
@@ -127,6 +133,10 @@ h4 {
     border: 2px solid var(--blue) !important;
 }
 
+input:placeholder-shown {
+    font-style: italic;
+}
+
 .input-group-text-right {
     border: 2px solid var(--blue) !important;
     border-right: none !important;
@@ -178,7 +188,7 @@ h4 {
     background-color: var(--blue);
     color: var(--white);
     font-weight: 800;
-    font-size: 12px;
+    font-size: 14px;
     text-transform: uppercase;
     border: 3px solid var(--blue) !important;
 }
@@ -229,30 +239,8 @@ img {
 }
 
 @media (max-width: 1024px) {
-    body {
-        font-size: 11px !important;
-    }
-
-    .dropdown-menu > a {
-        padding-left: 5px !important;
-        font-size: 11px;
-    }
-
-    .login-header {
-        font-size: 34px;
-    }
-
-    .btn-big {
-        font-size: 12px !important;
-    }
-
-    .form-control {
-        padding: 5px !important;
-        font-size: 14px;
-    }
-
-    .img-banner {
-        max-width: 500px !important;
+    body, .link-hover {
+        font-size: 14px !important;
     }
 
     h3 {
@@ -263,16 +251,8 @@ img {
         font-size: 18px;
     }
 
-    .price-tag {
-        font-size: 16px !important;
-    }
-
-    .card .btn {
-        font-size: 11px;
-    }
-
-    .card-img-top {
-        height: 150px;
+    h6 {
+        font-size: 12px;
     }
 
     a {
@@ -283,20 +263,70 @@ img {
         height: 50vh !important;
     }
 
-    h6 {
+    .btn {
+        font-size: 10px !important;
+    }
+
+    .btn-big {
+        font-size: 12px !important;
+    }
+
+    .card .btn {
         font-size: 11px;
     }
 
-    .btn {
-        font-size: 9px;
+    .dropdown-menu > a {
+        padding-left: 5px !important;
+        font-size: 14px;
+    }
+
+    .login-header {
+        font-size: 40px;
+    }
+
+    .img-banner {
+        max-width: 500px !important;
+    }
+
+    .form-control {
+        padding: 5px !important;
+        font-size: 14px;
+    }
+
+    .price-tag {
+        font-size: 16px !important;
     }
 
     .card {
         width: 100% !important;
     }
+
+    .card-img-top {
+        height: 150px;
+    }
 }
 
 @media (max-width: 750px) {
+    body, .link-hover {
+        font-size: 11px !important;
+    }
+
+    h1, h6 {
+        margin-top: 20px;
+    }
+
+    .ml-2 {
+        margin: 0px;
+    }
+
+    .btn {
+        font-size: 11px;
+    }
+
+    .dropdown-menu > a {
+        font-size: 11px;
+    }
+
     .border-right-o {
         border-right: none !important;
         border-bottom: 5px solid var(--orange) !important;
@@ -306,45 +336,33 @@ img {
         box-shadow: 1px 0px 5px 0px rgba(97,97,97,1);
     }
 
-    .avans-logo {
-        display: none;
+    .card {
+        width: 14rem !important;
     }
 
     .img-banner {
         max-width: 450px !important;
     }
 
-    .card {
-        width: 14rem !important;
-    }
-
     .detail-img {
         height: 200px;
     }
 
-    h1, h6 {
-        margin-top: 20px;
-    }
-
-    .btn {
-        font-size: 10px;
+    .avans-logo {
+        display: none;
     }
 }
 
 @media (max-width: 480px) {
+    .ch-100 {
+        height: 40vh !important;
+    }
+
     .img-banner {
         max-width: 280px !important;
     }
 
     .card {
         width: 100% !important;
-    }
-
-    .ch-100 {
-        height: 40vh !important;
-    }
-
-    .ml-2 {
-        margin: 0px;
     }
 }

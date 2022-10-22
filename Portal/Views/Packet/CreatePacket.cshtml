@@ -15,6 +15,12 @@
     </div>
 }
 
+<div class="row mx-3 mt-3">
+    <div class="col-md-12 p-0">
+        <i class="bi bi-arrow-left" onclick="history.back(1)"></i>
+    </div>
+</div>
+
 <div class="row justify-content-center">
     <div class="col-md-10 px-5 py-3">
         <h1>Stel pakket samen</h1>
@@ -25,7 +31,7 @@
         <div class="col-md-5 px-5 pb-2">
             <div class="form-group mb-4">
                 <label asp-for="Packet.Name" class="form-label"></label>
-                <input asp-for="Packet.Name" class="form-control" />
+                <input asp-for="Packet.Name" class="form-control" placeholder="Drankpakket" />
             </div>
             <div class="form-group mb-4">
                 <label asp-for="Packet.MealType" class="form-label"></label>
@@ -39,7 +45,7 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text-left"><i class="bi bi-currency-euro"></i></div>
                     </div>
-                    <input asp-for="Packet.Price" class="form-control" />
+                    <input asp-for="Packet.Price" class="form-control" placeholder="4,99" />
                 </div>
             </div>
             <div class="form-group mb-4">
@@ -74,7 +80,7 @@
             </div>
         </div>
         <div class="col-md-5 px-5">
-            <button type="submit" class="btn btn-blue btn-big w-100 mt-2">Aanmaken</button>
+            <button type="submit" class="btn btn-blue btn-big w-100 my-2">Aanmaken</button>
         </div>
         <div class="col-md-5"></div>
     </div>
