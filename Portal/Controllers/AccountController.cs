@@ -57,7 +57,6 @@ namespace Portal.Controllers
             return RedirectToAction("Index", "Packet");
         }
 
-        [HttpGet]
         public IActionResult Register() => View();
 
         [HttpGet]

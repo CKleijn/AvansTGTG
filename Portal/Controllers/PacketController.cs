@@ -34,7 +34,6 @@ namespace Portal.Controllers
             };
         }
 
-        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var user = FillUser();
@@ -62,15 +61,12 @@ namespace Portal.Controllers
             return View(model);
         }
 
-        [HttpGet]
         public async Task<IActionResult> AllPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetAllAvailablePacketsAsync()));
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
-        [HttpGet]
         public async Task<IActionResult> AllCanteenPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(FillUser().UserName!)));
 
         [Authorize(Policy = "StudentOnly")]
-        [HttpGet]
         public async Task<IActionResult> MyReservedPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(FillUser().UserName!)));
 
         [HttpGet]
