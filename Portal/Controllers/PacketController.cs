@@ -24,38 +24,25 @@ namespace Portal.Controllers
             _canteenService = canteenService;
         }
 
-        public UserViewModel FillUser()
-        {
-            return new UserViewModel()
-            {
-                UserName = User.Identity?.Name!,
-                IsStudent = User.HasClaim("Role", "Student"),
-                IsCanteenEmployee = User.HasClaim("Role", "CanteenEmployee")
-            };
-        }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var user = FillUser();
-
             var allPackets = await GetPacketListViewModelAsync(await _packetService.GetAllAvailablePacketsAsync());
 
             var model = new PacketOverviewViewModel()
             {
-                User = user,
                 AllPackets = allPackets.PacketList!.Take(4)
             };
 
-            if (user.UserName != null && user.IsCanteenEmployee)
+            if (User.HasClaim("Role", "CanteenEmployee"))
             {
-                var allCanteenPackets = await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(user.UserName));
+                var allCanteenPackets = await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(User.Identity?.Name!));
                 model.AllCanteenPackets = allCanteenPackets.PacketList!.Take(4);
             }
 
-            if (user.UserName != null && user.IsStudent)
+            if (User.HasClaim("Role", "Student"))
             {
-                var myReservedPackets = await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(user.UserName));
+                var myReservedPackets = await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(User.Identity?.Name!));
                 model.MyReservedPackets = myReservedPackets.PacketList!.Take(4);
             }
 
@@ -66,11 +53,11 @@ namespace Portal.Controllers
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
         [HttpGet]
-        public async Task<IActionResult> AllCanteenPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(FillUser().UserName!)));
+        public async Task<IActionResult> AllCanteenPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(User.Identity?.Name!)));
 
         [Authorize(Policy = "StudentOnly")]
         [HttpGet]
-        public async Task<IActionResult> MyReservedPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(FillUser().UserName!)));
+        public async Task<IActionResult> MyReservedPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(User.Identity?.Name!)));
 
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
@@ -96,9 +83,7 @@ namespace Portal.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePacket(PacketViewModel packetViewModel)
         {
-            var user = FillUser();
-
-            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(user.UserName!);
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(User.Identity?.Name!);
 
             var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
 
@@ -117,7 +102,7 @@ namespace Portal.Controllers
 
             if (ModelState.IsValid)
             {
-                var newPacket = await _packetService.CreatePacketAsync(packetViewModel.Packet, user.UserName!, packetViewModel.SelectedProducts!);
+                var newPacket = await _packetService.CreatePacketAsync(packetViewModel.Packet, User.Identity?.Name!, packetViewModel.SelectedProducts!);
                 return RedirectToAction("Detail", new { id = newPacket.PacketId });
             } 
 
@@ -134,11 +119,9 @@ namespace Portal.Controllers
         [HttpPost]
         public async Task<IActionResult> ReservePacket(int id)
         {
-            var user = FillUser();
-
             var packet = await _packetService.GetPacketByIdAsync(id);
 
-            var student = await _studentService.GetStudentByStudentNumberAsync(user.UserName!);
+            var student = await _studentService.GetStudentByStudentNumberAsync(User.Identity?.Name!);
 
             if ((bool) packet?.IsEightteenPlusPacket! && student.DateOfBirth!.Value.AddYears(18) > packet.PickUpDateTime)
                 ModelState.AddModelError("NotEighteen", "Je kan dit pakket niet reserveren, omdat dit pakket 18+ producten bevat!");
@@ -151,7 +134,7 @@ namespace Portal.Controllers
 
             if (ModelState.IsValid)
                 if ((bool) packet?.IsEightteenPlusPacket! && (packet?.PickUpDateTime - student?.DateOfBirth)!.Value.TotalDays > (365 * 18) || (bool) !packet?.IsEightteenPlusPacket!)
-                    if (await _packetService.ReservePacketAsync(id, user.UserName!))
+                    if (await _packetService.ReservePacketAsync(id, User.Identity?.Name!))
                         return RedirectToAction("MyReservedPackets", "Packet");
 
             return View("Detail", await GetPacketDetailViewModelAsync(packet!));
@@ -161,11 +144,9 @@ namespace Portal.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdatePacket(int id)
         {
-            var user = FillUser();
-
             var packet = await _packetService.GetPacketByIdAsync(id);
 
-            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(user.UserName!);
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(User.Identity?.Name!);
 
             if(packet.Canteen?.Location != canteenEmployee.Location)
                 return RedirectToAction("Index", "Packet");
@@ -177,11 +158,9 @@ namespace Portal.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdatePacket(int id, PacketViewModel packetViewModel)
         {
-            var user = FillUser();
-
             var packet = await _packetService.GetPacketByIdAsync(id);
 
-            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(user.UserName!);
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(User.Identity?.Name!);
 
             var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
 
@@ -205,7 +184,7 @@ namespace Portal.Controllers
                     ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
 
             if (ModelState.IsValid)
-                if (await _packetService.UpdatePacketAsync(id, packetViewModel.Packet, user.UserName!, packetViewModel.SelectedProducts))
+                if (await _packetService.UpdatePacketAsync(id, packetViewModel.Packet, User.Identity?.Name!, packetViewModel.SelectedProducts))
                     return RedirectToAction("Detail", new { id });
 
             return View(await GetPacketViewModelAsync(packet));
@@ -215,11 +194,9 @@ namespace Portal.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletePacket(int id)
         {
-            var user = FillUser();
-
             var packet = await _packetService.GetPacketByIdAsync(id);
 
-            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(user.UserName!);
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(User.Identity?.Name!);
 
             if (packet.Canteen?.Location != canteenEmployee.Location)
                 return RedirectToAction("Index", "Packet");
@@ -228,7 +205,7 @@ namespace Portal.Controllers
                 ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet verwijderen, omdat deze al gereserveerd is!");
 
             if (ModelState.IsValid)
-                if (await _packetService.DeletePacketAsync(id, user.UserName!))
+                if (await _packetService.DeletePacketAsync(id, User.Identity?.Name!))
                     return RedirectToAction("Index", "Packet");
 
             return View("Detail", await GetPacketDetailViewModelAsync(packet!));
@@ -246,12 +223,7 @@ namespace Portal.Controllers
 
         public async Task<PacketDetailViewModel> GetPacketDetailViewModelAsync(Packet packet)
         {
-            var user = FillUser();
-
             var formattedPacket = await FormatPacketAsync(packet);
-
-            formattedPacket.User = user;
-            formattedPacket.User.IsCanteenLocation = User.HasClaim("Location", packet.Canteen?.Location.ToString()!);
 
             return formattedPacket;
         }
@@ -265,7 +237,6 @@ namespace Portal.Controllers
 
             return new PacketListViewModel()
             {
-                User = FillUser(),
                 PacketList = listOfFormattedPackets
             };
         }
@@ -291,9 +262,7 @@ namespace Portal.Controllers
 
         public async Task<PacketDetailViewModel> FormatPacketAsync(Packet packet)
         {
-            var user = FillUser();
-
-            var student = user.IsStudent ? await _studentService.GetStudentByStudentNumberAsync(user.UserName!) : null;
+            var student = User.HasClaim("Role", "Student") ? await _studentService.GetStudentByStudentNumberAsync(User.Identity?.Name!) : null;
 
             var products = FormatProduct(packet.Products!);
 
