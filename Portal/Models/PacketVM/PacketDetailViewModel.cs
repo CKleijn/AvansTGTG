@@ -1,11 +1,9 @@
-﻿using Portal.Models.AccountVM;
-using Portal.Models.ProductVM;
+﻿using Portal.Models.ProductVM;
 
 namespace Portal.Models.PacketVM
 {
     public class PacketDetailViewModel
     {
-        public UserViewModel? User { get; set; }
         public int PacketId { get; set; }
         [DisplayName("Naam")]
         public string? Name { get; set; }

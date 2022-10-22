@@ -2,6 +2,8 @@
 @model PacketListViewModel
 @{
     ViewData["Title"] = "Alle pakketten";
+    var isStudent = User.HasClaim("Role", "Student");
+    var isCanteenEmployee = User.HasClaim("Role", "CanteenEmployee");
 }
 
 <div class="p-3">
@@ -20,14 +22,14 @@
                             <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
                             @packet.PickUpDateTime
                             <div class="d-flex justify-content-between w-100 mt-3">
-                                @if (Model.User!.IsStudent || !Model.User!.IsStudent && !Model.User!.IsCanteenEmployee)
+                                @if (isStudent || !isStudent && !isCanteenEmployee)
                                 {
                                     <a class="btn btn-blue w-100 me-2" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
                                     <form class="w-100" asp-controller="Packet" asp-action="ReservePacket" asp-route-id="@packet.PacketId" method="post">
                                         <button class="btn btn-blue w-100" type="submit">Reserveer</button>
                                     </form>
                                 }
-                                else if (Model.User!.IsCanteenEmployee)
+                                else if (isCanteenEmployee)
                                 {
                                     <a class="btn btn-blue w-100" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
                                 }

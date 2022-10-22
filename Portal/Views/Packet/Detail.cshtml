@@ -2,6 +2,9 @@
 @model PacketDetailViewModel
 @{
     ViewData["Title"] = Model.Name;
+    var isStudent = User.HasClaim("Role", "Student");
+    var isCanteenEmployee = User.HasClaim("Role", "CanteenEmployee");
+    var isCanteenLocation = User.HasClaim("Location", Model.Canteen!);
 }
 
 @if (ViewData.ModelState.ErrorCount > 0)
@@ -114,7 +117,7 @@
                         </tr>
                     }
                 </table>
-                @if (Model.User!.IsStudent || !Model.User!.IsStudent && !Model.User!.IsCanteenEmployee)
+                @if (isStudent || !isStudent && !isCanteenEmployee)
                 {
                     if (!Model.ReservedBy!.Equals(Model.StudentName))
                     {
@@ -123,7 +126,7 @@
                         </form>
                     }
                 }
-                else if (Model.User!.IsCanteenEmployee && Model.User.IsCanteenLocation)
+                else if (isCanteenEmployee && isCanteenLocation)
                 {
                     <a asp-controller="Packet" asp-action="UpdatePacket" asp-route-id="@Model.PacketId" class="btn btn-blue">Bewerken</a>
                     <button data-toggle="modal" data-target="#deleteModal" type="button" class="btn btn-blue">Verwijderen</button>
