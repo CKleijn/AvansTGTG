@@ -66,15 +66,62 @@ h4 {
     border-bottom: 5px solid var(--orange) !important;
 }
 
+.alert {
+    padding: 10px 0px 0px 0px !important;
+}
+
+.mr-2 {
+    margin-right: 2rem;
+}
+
+.ml-2 {
+    margin-left: 2rem;
+}
+
+.ch-100 {
+    height: 500px !important;
+}
+
+.c-box-shadow {
+    box-shadow: 5px 5px 10px 0px rgba(97,97,97,1);
+}
+
+.c-f-size {
+    font-size: 22px !important;
+}
+/* END - GENERAL */
+
+/* START - NAV */
+.nav {
+    margin: 0px !important;
+}
+
 .dropdown-menu > a {
     color: var(--black) !important;
 }
 
-.dropdown-menu > a:hover {
-    background-color: var(--blue) !important;
+    .dropdown-menu > a:hover {
+        background-color: var(--blue) !important;
+        color: var(--white) !important;
+    }
+
+.navbar-toggler {
     color: var(--white) !important;
 }
+/* END - NAV */
+/* START - LOGIN */
+.login-header {
+    font-size: 60px;
+    color: var(--white);
+    text-transform: uppercase;
+}
 
+.link-hover:hover {
+    color: var(--orange) !important;
+}
+/* END - LOGIN */
+
+/* START - FORM */
 .form-control {
     padding: 10px;
     border: 2px solid var(--blue) !important;
@@ -97,7 +144,35 @@ h4 {
     padding: 10px;
     border-radius: 4px 0px 0px 4px;
 }
+/* END - FORM */
 
+/* START - CARDS */
+.card {
+    border: 3px solid var(--blue);
+    box-shadow: 5px 5px 10px 0px rgba(97,97,97,1);
+}
+
+.card-img-top {
+    border-bottom: 3px solid var(--blue);
+    height: 200px;
+    object-fit: contain;
+}
+
+.card-body {
+    font-size: 14px;
+}
+
+.price-tag {
+    border-right: 3px solid var(--blue) !important;
+    border-bottom: 3px solid var(--blue) !important;
+    padding: 5px;
+    font-size: 30px;
+    z-index: 2;
+    background-color: var(--white);
+}
+/* END - CARDS */
+
+/* START - BUTTON */
 .btn-blue {
     font-family: 'Seaford', sans-serif !important;
     background-color: var(--blue);
@@ -105,7 +180,7 @@ h4 {
     font-weight: 800;
     font-size: 12px;
     text-transform: uppercase;
-    border: 3px solid var(--blue);
+    border: 3px solid var(--blue) !important;
 }
 
 .btn-big {
@@ -122,27 +197,9 @@ h4 {
     outline: none !important;
     box-shadow: none;
 }
+/* END - BUTTON */
 
-.alert {
-    padding: 10px 0px 0px 0px !important;
-}
-
-.mr-2 {
-    margin-right: 2rem;
-}
-
-.ml-2 {
-    margin-left: 2rem;
-}
-
-.ch-100 {
-    height: 500px !important;
-}
-
-.c-box-shadow {
-    box-shadow: 5px 5px 10px 0px rgba(97,97,97,1);
-}
-
+/* START - IMG */
 img {
     pointer-events: none;
 }
@@ -151,52 +208,143 @@ img {
     object-fit: contain;
 }
 
-.price-tag {
-    border-right: 3px solid var(--blue) !important;
-    border-bottom: 3px solid var(--blue) !important;
-    padding: 5px;
-    font-size: 30px;
-    z-index: 2;
-    background-color: var(--white);
-}
-
-.c-f-size {
-    font-size: 22px !important;
-}
-
-.nav {
-    margin: 0px !important;
+.img-banner {
+    max-width: 1100px !important;
 }
 
 .detail-img {
     height: 400px;
     object-fit: contain;
 }
-/* END - GENERAL */
-/* START - LOGIN */
-.login-header {
-    font-size: 60px;
-    color: var(--white);
-    text-transform: uppercase;
+/* END - IMG */
+
+@media (max-width: 1200px) {
+    .login-header {
+        font-size: 48px;
+    }
+
+    .img-banner {
+        max-width: 800px !important;
+    }
 }
 
-.link-hover:hover {
-    color: var(--orange) !important;
-}
-/* END - LOGIN */
-/* START - CARDS */
-.card {
-    border: 3px solid var(--blue);
-    box-shadow: 5px 5px 10px 0px rgba(97,97,97,1);
+@media (max-width: 1024px) {
+    body {
+        font-size: 11px !important;
+    }
+
+    .dropdown-menu > a {
+        padding-left: 5px !important;
+        font-size: 11px;
+    }
+
+    .login-header {
+        font-size: 34px;
+    }
+
+    .btn-big {
+        font-size: 12px !important;
+    }
+
+    .form-control {
+        padding: 5px !important;
+        font-size: 14px;
+    }
+
+    .img-banner {
+        max-width: 500px !important;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    h4 {
+        font-size: 18px;
+    }
+
+    .price-tag {
+        font-size: 16px !important;
+    }
+
+    .card .btn {
+        font-size: 11px;
+    }
+
+    .card-img-top {
+        height: 150px;
+    }
+
+    a {
+        font-size: 14px;
+    }
+
+    .ch-100 {
+        height: 50vh !important;
+    }
+
+    h6 {
+        font-size: 11px;
+    }
+
+    .btn {
+        font-size: 9px;
+    }
+
+    .card {
+        width: 100% !important;
+    }
 }
 
-.card-img-top {
-    border-bottom: 3px solid var(--blue);
-    height: 200px;
-    object-fit: contain;
+@media (max-width: 750px) {
+    .border-right-o {
+        border-right: none !important;
+        border-bottom: 5px solid var(--orange) !important;
+    }
+
+    .c-box-shadow {
+        box-shadow: 1px 0px 5px 0px rgba(97,97,97,1);
+    }
+
+    .avans-logo {
+        display: none;
+    }
+
+    .img-banner {
+        max-width: 450px !important;
+    }
+
+    .card {
+        width: 14rem !important;
+    }
+
+    .detail-img {
+        height: 200px;
+    }
+
+    h1, h6 {
+        margin-top: 20px;
+    }
+
+    .btn {
+        font-size: 10px;
+    }
 }
 
-.card-body {
-    font-size: 14px;
+@media (max-width: 480px) {
+    .img-banner {
+        max-width: 280px !important;
+    }
+
+    .card {
+        width: 100% !important;
+    }
+
+    .ch-100 {
+        height: 40vh !important;
+    }
+
+    .ml-2 {
+        margin: 0px;
+    }
 }
-/* END - CARDS */
