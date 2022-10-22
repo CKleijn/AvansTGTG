@@ -10,7 +10,7 @@
         @if(Model.PacketList!.Any()) {
             @foreach (var packet in Model.PacketList!)
             {
-                <div class="col-3 mb-5">
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-5">
                     <div class="card" style="width: 18rem;">
                         <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
                         <div class="position-absolute top-0 start-0 price-tag c-f-size">
