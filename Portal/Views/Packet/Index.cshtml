@@ -6,7 +6,7 @@
 
 <div class="row mt-0 mb-3">
     <div class="col-md-12 border-bottom-o" align="center">
-        <img src="~/img/CanteenBanner.png" alt="Banner" />
+        <img class="img-banner" src="~/img/CanteenBanner.png" alt="Banner" />
     </div>
 </div>
 
@@ -28,7 +28,7 @@
         <div class="row">
             @foreach (var packet in Model.AllPackets!)
             {
-                <div class="col-md-3 mb-4">
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
                     <div class="card" style="width: 18rem;">
                         <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
                         <div class="position-absolute top-0 start-0 price-tag c-f-size">
@@ -65,7 +65,7 @@
         <div class="row">
             @foreach (var packet in Model.MyReservedPackets!)
             {
-                <div class="col-md-3 mb-4">
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
                     <div class="card" style="width: 18rem;">
                         <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
                         <div class="position-absolute top-0 start-0 price-tag c-f-size">
@@ -91,7 +91,7 @@
         <div class="row">
             @foreach (var packet in Model.AllCanteenPackets!)
             {
-                <div class="col-md-3 mb-4">
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
                     <div class="card" style="width: 18rem;">
                         <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
                         <div class="position-absolute top-0 start-0 price-tag c-f-size">
