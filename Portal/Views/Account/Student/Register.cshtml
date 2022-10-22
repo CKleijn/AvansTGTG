@@ -15,7 +15,13 @@
     </div>
 }
 
-<div class="row justify-content-center my-5">
+<div class="row mx-3 mt-3">
+    <div class="col-md-12 p-0">
+        <i class="bi bi-arrow-left" onclick="history.back(1)"></i>
+    </div>
+</div>
+
+<div class="row justify-content-center my-4">
     <div class="col-md-5 bg-blue border-right-o d-flex align-items-center justify-content-center py-5 c-box-shadow">
         <h1 class="login-header text-center">student</h1>
     </div>
@@ -23,11 +29,11 @@
         <form asp-action="RegisterStudent" asp-controller="Account" method="post">
             <div class="form-group mb-4">
                 <label asp-for="FirstName" class="form-label"></label>
-                <input asp-for="FirstName" class="form-control" />
+                <input asp-for="FirstName" class="form-control" placeholder="John" />
             </div>
             <div class="form-group mb-4">
                 <label asp-for="LastName" class="form-label"></label>
-                <input asp-for="LastName" class="form-control" />
+                <input asp-for="LastName" class="form-control" placeholder="Doe" />
             </div>
             <div class="form-group mb-4">
                 <label asp-for="DateOfBirth" class="form-label"></label>
@@ -40,15 +46,15 @@
             </div>
             <div class="form-group mb-4">
                 <label asp-for="EmailAddress" class="form-label"></label>
-                <input asp-for="EmailAddress" class="form-control" />
+                <input asp-for="EmailAddress" class="form-control" placeholder="johndoe@gmail.com" />
             </div>
             <div class="form-group mb-4">
                 <label asp-for="PhoneNumber" class="form-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
+                <input asp-for="PhoneNumber" class="form-control" placeholder="0612983476" />
             </div>
             <div class="form-group mb-4">
                 <label asp-for="StudentNumber" class="form-label"></label>
-                <input asp-for="StudentNumber" class="form-control" />
+                <input asp-for="StudentNumber" class="form-control" placeholder="6346913" />
             </div>
             <div class="form-group mb-4">
                 <label asp-for="StudyCity" class="form-label"></label>
@@ -58,7 +64,7 @@
             </div>
             <div class="form-group mb-4">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" type="password" class="form-control" />
+                <input asp-for="Password" type="password" class="form-control" placeholder="********" />
             </div>
             Al een account? <a class="blue-text link-hover" asp-controller="Account" asp-action="Login"><b>Log hier in!</b></a>
             <button type="submit" class="btn btn-blue btn-big w-100 mt-2">Registreren</button>
