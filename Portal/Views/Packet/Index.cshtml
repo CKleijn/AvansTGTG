@@ -2,6 +2,8 @@
 @model PacketOverviewViewModel
 @{
     ViewData["Title"] = "Home";
+    var isStudent = User.HasClaim("Role", "Student");
+    var isCanteenEmployee = User.HasClaim("Role", "CanteenEmployee");
 }
 
 <div class="row mt-0 mb-3">
@@ -38,14 +40,14 @@
                             <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
                             @packet.PickUpDateTime
                             <div class="d-flex justify-content-between w-100 mt-3">
-                                @if (Model.User!.IsStudent || !Model.User!.IsStudent && !Model.User!.IsCanteenEmployee)
+                                @if (isStudent || !isStudent && !isCanteenEmployee)
                                 {
                                     <a class="btn btn-blue w-100 me-2" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
                                     <form class="w-100" asp-controller="Packet" asp-action="ReservePacket" asp-route-id="@packet.PacketId" method="post">
                                         <button class="btn btn-blue w-100" type="submit">Reserveer</button>
                                     </form>
                                 }
-                                else if (Model.User!.IsCanteenEmployee)
+                                else if (isCanteenEmployee)
                                 {
                                     <a class="btn btn-blue w-100" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
                                 }
@@ -59,7 +61,7 @@
         </div>
     }
 
-    @if (Model.User!.IsStudent && Model.MyReservedPackets!.Any())
+    @if (isStudent && Model.MyReservedPackets!.Any())
     {
         <h3>Mijn gereserveerde pakketten</h3>
         <div class="row">
@@ -85,7 +87,7 @@
             <a class="mb-5 blue-text" asp-controller="Packet" asp-action="MyReservedPackets">Bekijk hier al mijn gereserveerde pakketten</a>
         </div>
     }
-    else if (Model.User!.IsCanteenEmployee && Model.AllCanteenPackets!.Any())
+    else if (isCanteenEmployee && Model.AllCanteenPackets!.Any())
     {
         <h3>Alle kantine pakketten</h3>
         <div class="row">
@@ -98,7 +100,7 @@
                             <span class="blue-text">@packet.Price</span>
                         </div>
                         <div class="card-body">
-                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
+                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket <i class="@((packet.ReservedBy != "-") ? "bi bi-bag-check-fill" : "")"></i></h4>
                             @packet.PickUpDateTime
                             <div class="mt-3">
                                 <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
