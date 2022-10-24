@@ -22,7 +22,6 @@ namespace Portal.Controllers
             _canteenEmployeeService = canteenEmployeeService;
         }
 
-        [HttpGet]
         public IActionResult Login() => View();
 
         [HttpPost]
@@ -59,7 +58,6 @@ namespace Portal.Controllers
 
         public IActionResult Register() => View();
 
-        [HttpGet]
         public IActionResult RegisterStudent() => View("Student/Register");
 
         [HttpPost]
@@ -118,7 +116,6 @@ namespace Portal.Controllers
             return View("Student/Register", studentRegisterViewModel);
         }
 
-        [HttpGet]
         public IActionResult RegisterCanteenEmployee() => View("CanteenEmployee/Register");
 
         [HttpPost]
