@@ -28,13 +28,6 @@
             return allPackets.Where(p => p.ReservedBy == null);
         }
 
-        public async Task<IEnumerable<Packet>> GetSpecificCanteenPacketsAsync(Canteen canteen)
-        {
-            var allPackets = await _packetRepository.GetPacketsAsync();
-
-            return allPackets.Where(p => p.Canteen == canteen);
-        }
-
         public async Task<IEnumerable<Packet>> GetMyCanteenOfferedPacketsAsync(string employeeNumber)
         {
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
