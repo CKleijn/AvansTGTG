@@ -1,6 +1,4 @@
-﻿using Core.Domain.Enums;
-
-namespace Infrastructure.Repositories
+﻿namespace Infrastructure.Repositories
 {
     public class CanteenRepository : ICanteenRepository
     {
@@ -15,8 +13,8 @@ namespace Infrastructure.Repositories
 
             if (canteen != null)
                 return canteen;
-            
-            throw new KeyNotFoundException();
+
+            throw new Exception($"Er bestaat geen kantine met de locatie {canteenLocation}!");
         }
         public async Task<IEnumerable<Canteen>> GetCanteensAsync() => await _context.Canteens.ToListAsync();
     }

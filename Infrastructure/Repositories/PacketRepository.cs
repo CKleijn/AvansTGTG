@@ -15,7 +15,7 @@
             if (packet != null)
                 return packet;
 
-            throw new KeyNotFoundException();
+            throw new Exception($"Er bestaat geen pakket met de id {packetId}!");
         }
 
         public async Task<IEnumerable<Packet>> GetPacketsAsync() => await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).OrderBy(p => p.PickUpDateTime).ToListAsync();
@@ -28,13 +28,13 @@
                 await _context.SaveChangesAsync();
                 return packet;
             }
-            
-            throw new InvalidOperationException();
+
+            throw new Exception("Het meegegeven pakket is fout!");
         }
 
         public async Task<bool> UpdatePacketAsync(int packetId)
         {
-            var packet = await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).FirstOrDefaultAsync(p => p.PacketId == packetId);
+            var packet = await GetPacketByIdAsync(packetId);
 
             if (packet != null)
             {
@@ -47,7 +47,7 @@
         }
         public async Task<bool> DeletePacketAsync(int packetId)
         {
-            var packet = await _context.Packets.Include(p => p.Products).Include(p => p.Canteen).Include(p => p.ReservedBy).FirstOrDefaultAsync(p => p.PacketId == packetId);
+            var packet = await GetPacketByIdAsync(packetId);
 
             if (packet != null)
             {

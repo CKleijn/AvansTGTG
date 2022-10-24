@@ -1,7 +1,4 @@
-﻿using Core.DomainServices.Interfaces.Services;
-using Portal.Models.AccountVM;
-
-namespace Portal.Controllers
+﻿namespace Portal.Controllers
 {
     public class AccountController : Controller
     {
@@ -10,11 +7,7 @@ namespace Portal.Controllers
         private IStudentService _studentService;
         private ICanteenEmployeeService _canteenEmployeeService;
 
-        public AccountController(
-            UserManager<IdentityUser> userManager, 
-            SignInManager<IdentityUser> signInManager, 
-            IStudentService studentService, 
-            ICanteenEmployeeService canteenEmployeeService)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IStudentService studentService, ICanteenEmployeeService canteenEmployeeService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -63,23 +56,6 @@ namespace Portal.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterStudent(StudentRegisterViewModel studentRegisterViewModel)
         {
-            if (studentRegisterViewModel.DateOfBirth > DateTime.Now)
-                ModelState.AddModelError("DateNotPossible", "Deze datum is onmogelijk!");
-
-            if (studentRegisterViewModel.DateOfBirth > DateTime.Now.AddYears(-16))
-                ModelState.AddModelError("AgeUnder16", "Je moet 16 jaar of ouder zijn voor een account!");
-
-            if (studentRegisterViewModel.Password?.Length < 8)
-                ModelState.AddModelError("PasswordToShort", "Het wachtwoord moet minimaal 8 tekens bevatten!");
-
-            if(studentRegisterViewModel.Password != null)
-                if (!studentRegisterViewModel.Password!.Any(c => char.IsUpper(c)))
-                    ModelState.AddModelError("PasswordNoUpper", "Het wachtwoord moet minimaal 1 hoofdletter bevatten");
-
-            if (studentRegisterViewModel.Password != null)
-                if (!studentRegisterViewModel.Password!.Any(c => char.IsNumber(c)))
-                    ModelState.AddModelError("PasswordNoNumber", "Het wachtwoord moet minimaal 1 cijfer bevatten");
-
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser
@@ -87,9 +63,6 @@ namespace Portal.Controllers
                     UserName = studentRegisterViewModel.StudentNumber,
                     EmailConfirmed = true
                 };
-
-                var result = await _userManager.CreateAsync(user, studentRegisterViewModel.Password);
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "Student"));
 
                 var student = new Student
                 {
@@ -100,6 +73,9 @@ namespace Portal.Controllers
                     StudyCity = studentRegisterViewModel.StudyCity,
                     PhoneNumber = studentRegisterViewModel.PhoneNumber
                 };
+
+                var result = await _userManager.CreateAsync(user, studentRegisterViewModel.Password);
+                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "Student"));
 
                 if (result.Succeeded)
                 {
@@ -121,17 +97,6 @@ namespace Portal.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterCanteenEmployee(CanteenEmployeeRegisterViewModel canteenEmployeeRegisterViewModel)
         {
-            if (canteenEmployeeRegisterViewModel.Password?.Length < 8)
-                ModelState.AddModelError("PasswordToShort", "Het wachtwoord moet minimaal 8 tekens bevatten!");
-
-            if (canteenEmployeeRegisterViewModel.Password != null)
-                if (!canteenEmployeeRegisterViewModel.Password!.Any(c => char.IsUpper(c)))
-                    ModelState.AddModelError("PasswordNoUpper", "Het wachtwoord moet minimaal 1 hoofdletter bevatten");
-
-            if (canteenEmployeeRegisterViewModel.Password != null)
-                if (!canteenEmployeeRegisterViewModel.Password!.Any(c => char.IsNumber(c)))
-                    ModelState.AddModelError("PasswordNoNumber", "Het wachtwoord moet minimaal 1 cijfer bevatten");
-
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser
@@ -140,16 +105,16 @@ namespace Portal.Controllers
                     EmailConfirmed = true
                 };
 
-                var result = await _userManager.CreateAsync(user, canteenEmployeeRegisterViewModel.Password);
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "CanteenEmployee"));
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Location", canteenEmployeeRegisterViewModel.Location.ToString()!));
-
                 var canteenEmployee = new CanteenEmployee
                 {
                     Name = $"{canteenEmployeeRegisterViewModel.FirstName} {canteenEmployeeRegisterViewModel.LastName}",
                     EmployeeNumber = canteenEmployeeRegisterViewModel.EmployeeNumber,
                     Location = canteenEmployeeRegisterViewModel.Location
                 };
+
+                var result = await _userManager.CreateAsync(user, canteenEmployeeRegisterViewModel.Password);
+                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "CanteenEmployee"));
+                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Location", canteenEmployeeRegisterViewModel.Location.ToString()!));
 
                 if (result.Succeeded)
                 {

@@ -1,6 +1,4 @@
-﻿using Portal.Models.ProductVM;
-
-namespace Portal.Models.PacketVM
+﻿namespace Portal.Models.PacketVM
 {
     public class PacketDetailViewModel
     {

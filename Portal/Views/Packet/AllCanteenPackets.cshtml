@@ -1,5 +1,4 @@
-﻿@using Portal.Models.PacketVM
-@model PacketListViewModel
+﻿@model PacketListViewModel
 @{
     ViewData["Title"] = "Mijn kantine pakketten";
 }
@@ -17,7 +16,7 @@
                             <span class="blue-text">@packet.Price</span>
                         </div>
                         <div class="card-body">
-                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket <i class="@((packet.ReservedBy != "-") ? "bi bi-bag-check-fill" : "")"></i></h4>
+                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket <i class="@((packet.ReservedBy != "-") ? "bi bi-check-lg" : "")"></i></h4>
                             @packet.PickUpDateTime
                             <div class="mt-3">
                                 <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>

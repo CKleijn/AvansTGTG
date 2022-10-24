@@ -14,8 +14,8 @@
 
             if (canteenEmployee != null)
                 return canteenEmployee;
-            
-            throw new KeyNotFoundException();
+
+            throw new Exception($"Er bestaat geen kantine medewerker met de personeelsnummer {employeeNumber}!");
         }
 
         public async Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee)
@@ -28,7 +28,7 @@
             }
             else
             {
-                throw new InvalidOperationException();
+                throw new Exception("De meegegeven kantine medewerker is fout!");
             }
         }
     }

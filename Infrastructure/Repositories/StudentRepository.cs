@@ -13,8 +13,8 @@
 
             if (student != null)
                 return student;
-            
-            throw new KeyNotFoundException();
+
+            throw new Exception($"Er bestaat geen student met het studentnummer {studentNumber}!");
         }
         public async Task CreateStudentAsync(Student student)
         {
@@ -26,7 +26,7 @@
             }
             else
             {
-                throw new InvalidOperationException();
+                throw new Exception("De meegegeven student is niet goed!");
             }
         }
     }
