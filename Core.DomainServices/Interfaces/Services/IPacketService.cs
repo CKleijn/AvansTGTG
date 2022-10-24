@@ -7,7 +7,6 @@
         Task<IEnumerable<Packet>> GetAllAvailablePacketsAsync();
         Task<IEnumerable<Packet>> GetMyReservedPacketsAsync(string studentNumber);
         Task<IEnumerable<Packet>> GetMyCanteenOfferedPacketsAsync(string employeeNumber);
-        Task<IEnumerable<Packet>> GetSpecificCanteenPacketsAsync(Canteen canteen);
         Task<Packet> CreatePacketAsync(Packet packet, string employeeNumber, IList<string> products);
         Task<bool> ReservePacketAsync(int packetId, string studentNumber);
         Task<bool> UpdatePacketAsync(int packetId, Packet newPacket, string employeeNumber, IList<string> products);
