@@ -24,7 +24,6 @@ namespace Portal.Controllers
             _canteenService = canteenService;
         }
 
-        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var allPackets = await GetPacketListViewModelAsync(await _packetService.GetAllAvailablePacketsAsync());
@@ -52,14 +51,11 @@ namespace Portal.Controllers
         public async Task<IActionResult> AllPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetAllAvailablePacketsAsync()));
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
-        [HttpGet]
         public async Task<IActionResult> AllCanteenPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(User.Identity?.Name!)));
 
         [Authorize(Policy = "StudentOnly")]
-        [HttpGet]
         public async Task<IActionResult> MyReservedPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(User.Identity?.Name!)));
 
-        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             var packet = await _packetService.GetPacketByIdAsync(id);
