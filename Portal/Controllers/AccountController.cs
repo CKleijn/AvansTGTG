@@ -17,6 +17,7 @@
 
         public IActionResult Login() => View();
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
@@ -41,8 +42,9 @@
             return View(loginModel);
         }
 
-        [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -53,6 +55,7 @@
 
         public IActionResult RegisterStudent() => View("Student/Register");
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> RegisterStudent(StudentRegisterViewModel studentRegisterViewModel)
         {
@@ -94,6 +97,7 @@
 
         public IActionResult RegisterCanteenEmployee() => View("CanteenEmployee/Register");
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> RegisterCanteenEmployee(CanteenEmployeeRegisterViewModel canteenEmployeeRegisterViewModel)
         {

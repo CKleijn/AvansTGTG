@@ -44,7 +44,17 @@
         [Authorize(Policy = "StudentOnly")]
         public async Task<IActionResult> MyReservedPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(User.Identity?.Name!)));
 
-        public async Task<IActionResult> Detail(int id) => View(await GetPacketDetailViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
+        public async Task<IActionResult> Detail(int id)
+        {
+            try
+            {
+                return View(await GetPacketDetailViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Packet");
+            }
+        }
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
         [HttpGet]
@@ -59,6 +69,7 @@
         }
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> CreatePacket(PacketViewModel packetViewModel)
         {
@@ -97,6 +108,7 @@
         }
 
         [Authorize(Policy = "StudentOnly")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> ReservePacket(int id)
         {
@@ -125,9 +137,19 @@
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
         [HttpGet]
-        public async Task<IActionResult> UpdatePacket(int id) => View(await GetPacketViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
+        public async Task<IActionResult> UpdatePacket(int id) {
+            try
+            {
+                return View(await GetPacketViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Packet");
+            }
+        }
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> UpdatePacket(int id, PacketViewModel packetViewModel)
         {
@@ -164,6 +186,7 @@
         }
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> DeletePacket(int id)
         {
