@@ -22,7 +22,7 @@
         public bool? IsEightteenPlusPacket { get; set; }
         [Required(ErrorMessage = "Prijs is verplicht!")]
         [DisplayName("Prijs")]
-        public double? Price { get; set; }
+        public decimal? Price { get; set; }
         [Required(ErrorMessage = "Maaltijd type is verplicht!")]
         [DisplayName("Maaltijd type")]
         public MealTypes? MealType { get; set; }
