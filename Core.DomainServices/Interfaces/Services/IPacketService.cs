@@ -12,6 +12,5 @@
         Task<bool> UpdatePacketAsync(int packetId, Packet newPacket, string employeeNumber, IList<string> products);
         Task<bool> DeletePacketAsync(int packetId, string employeeNumber);
         Task<bool> CheckReservedPickUpDate(Student student, Packet packet);
-        Task<object> CheckAlcoholReturnProductList(IList<string> products);
     }
 }

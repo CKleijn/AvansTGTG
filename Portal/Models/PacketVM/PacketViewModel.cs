@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace Portal.Models.PacketVM
+﻿namespace Portal.Models.PacketVM
 {
     public class PacketViewModel
     {

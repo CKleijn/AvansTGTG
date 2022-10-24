@@ -1,27 +1,29 @@
-﻿@using Portal.Models.AccountVM
-@model CanteenEmployeeRegisterViewModel
+﻿@model CanteenEmployeeRegisterViewModel
 @{
     ViewData["Title"] = "Registreren als kantine medewerker";
 }
+
+<div class="row mx-3 mt-3">
+    <div class="col-md-12 p-0">
+        <a asp-controller="Account" asp-action="Register"><i class="bi bi-arrow-left"></i></a>
+    </div>
+</div>
 
 @if (ViewData.ModelState.ErrorCount > 0)
 {
     <div class="row justify-content-center">
         <div class="col-md-10 p-0">
-            <div class="alert alert-danger mt-3" role="alert">
-                <div asp-validation-summary="All"></div>
-            </div>
+            @foreach (var modelError in ViewData.ModelState.SelectMany(key => key.Value!.Errors))
+            {
+                <div class="alert alert-danger mt-3" role="alert">
+                    <p class="px-3"><i class="bi bi-bell"></i> @modelError.ErrorMessage</p>
+                </div>
+            }
         </div>
     </div>
 }
 
-<div class="row mx-3 mt-3">
-    <div class="col-md-12 p-0">
-        <i class="bi bi-arrow-left" onclick="history.back(1)"></i>
-    </div>
-</div>
-
-<div class="row justify-content-center my-4">
+<div class="row justify-content-center my-5">
     <div class="col-md-5 bg-blue border-right-o d-flex align-items-center justify-content-center py-5 c-box-shadow">
         <h1 class="login-header text-center">Kantine medewerker</h1>
     </div>
@@ -42,7 +44,7 @@
             <div class="form-group mb-4">
                 <label asp-for="Location" class="form-label"></label>
                 <select asp-for="Location" class="form-control form-select" asp-items="Html.GetEnumSelectList<Location>()">
-                    <option>Kies locatie</option>
+                    <option selected disabled>Kies locatie</option>
                 </select>
             </div>
             <div class="form-group mb-4">
