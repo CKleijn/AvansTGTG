@@ -59,6 +59,12 @@
         [HttpPost]
         public async Task<IActionResult> RegisterStudent(StudentRegisterViewModel studentRegisterViewModel)
         {
+            if (studentRegisterViewModel.DateOfBirth > DateTime.Now)
+                ModelState.AddModelError("DateNotPossible", "Deze datum is onmogelijk!");
+
+            if (studentRegisterViewModel.DateOfBirth > DateTime.Now.AddYears(-16))
+                ModelState.AddModelError("AgeUnder16", "Je moet 16 jaar of ouder zijn voor een account!");
+
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser
