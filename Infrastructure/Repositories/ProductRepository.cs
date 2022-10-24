@@ -13,8 +13,8 @@
 
             if (product != null)
                 return product;
-            
-            throw new KeyNotFoundException();
+
+            throw new Exception($"Er bestaat geen product met de naam {name}!");
         }
         public async Task<IEnumerable<Product>> GetProductsAsync() => await _context.Products.ToListAsync();
     }

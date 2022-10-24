@@ -50,11 +50,24 @@
 
         public async Task<Packet> CreatePacketAsync(Packet packet, string employeeNumber, IList<string> products)
         {
-            dynamic productList = await CheckAlcoholReturnProductList(products);
-
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
             var canteen = await _canteenService.GetCanteenByLocationAsync((Location) canteenEmployee.Location!);
+
+            if (products.Count == 0)
+                throw new Exception("Producten zijn verplicht!");
+
+            if (packet.MealType != null)
+                if ((int)packet.MealType! == 4 && canteen.OfferingHotMeals == false)
+                    throw new Exception("Je kantine biedt geen warme maaltijden aan!");
+
+            if (packet.PickUpDateTime < DateTime.Now || packet.PickUpDateTime > packet.LatestPickUpTime)
+                throw new Exception("Deze datum en/of tijd is onmogelijk!");
+
+            if (packet.PickUpDateTime > DateTime.Now.AddDays(2))
+                throw new Exception("Je mag maar maximaal 2 dagen vooruit plannen!");
+
+            dynamic productList = await _productService.CheckAlcoholReturnProductList(products);
 
             packet.Products = productList.productList;
             packet.IsEightteenPlusPacket = productList.containsAlchohol;
@@ -68,18 +81,50 @@
         {
             var packet = await GetPacketByIdAsync(packetId);
 
-            packet.ReservedBy = await _studentService.GetStudentByStudentNumberAsync(studentNumber);
+            var student = await _studentService.GetStudentByStudentNumberAsync(studentNumber);
+
+            if (packet.ReservedBy != null)
+                throw new Exception("Je kan dit pakket niet reserveren, omdat deze al gereserveerd is door een andere student!");
+
+            if (await CheckReservedPickUpDate(student, packet))
+                throw new Exception("Je kan dit pakket niet reserveren, omdat je al meer dan 1 pakket op deze afhaaldatum hebt!");
+
+            if ((bool)packet.IsEightteenPlusPacket! && student.DateOfBirth!.Value.AddYears(18) > packet.PickUpDateTime)
+                throw new Exception("Je kan dit pakket niet reserveren, omdat dit pakket 18+ producten bevat!");
+
+            packet!.ReservedBy = student;
 
             return await _packetRepository.UpdatePacketAsync(packetId);
         }
 
         public async Task<bool> UpdatePacketAsync(int packetId, Packet newPacket, string employeeNumber, IList<string> products)
         {
-            var packet = await _packetRepository.GetPacketByIdAsync(packetId);
-
-            dynamic productList = await CheckAlcoholReturnProductList(products);
+            var packet = await GetPacketByIdAsync(packetId);
 
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
+
+            var canteen = await _canteenService.GetCanteenByLocationAsync((Location)canteenEmployee.Location!);
+
+            if (packet.Canteen?.Location != canteenEmployee.Location)
+                throw new Exception("Dit pakket is niet van jouw kantine!");
+
+            if (packet.ReservedBy != null)
+                throw new Exception("Je kan dit pakket niet bewerken, omdat deze al gereserveerd is!");
+
+            if (products.Count == 0)
+                throw new Exception("Producten zijn verplicht!");
+
+            if (newPacket.MealType != null)
+                if ((int)newPacket.MealType! == 4 && canteen.OfferingHotMeals == false)
+                    throw new Exception("Je kantine biedt geen warme maaltijden aan!");
+
+            if (newPacket.PickUpDateTime < DateTime.Now || newPacket.PickUpDateTime > newPacket.LatestPickUpTime)
+                throw new Exception("Deze datum en/of tijd is onmogelijk!");
+
+            if (newPacket.PickUpDateTime > DateTime.Now.AddDays(2))
+                throw new Exception("Je mag maar maximaal 2 dagen vooruit plannen!");
+
+            dynamic productList = await _productService.CheckAlcoholReturnProductList(products);
 
             packet.Name = newPacket.Name;
             packet.Products = productList.productList;
@@ -89,10 +134,7 @@
             packet.PickUpDateTime = newPacket.PickUpDateTime;
             packet.LatestPickUpTime = newPacket.LatestPickUpTime;
 
-            if (packet.Canteen?.Location == canteenEmployee.Location)
-                return await _packetRepository.UpdatePacketAsync(packetId);
-
-            return false;
+            return await _packetRepository.UpdatePacketAsync(packetId);
         }
 
         public async Task<bool> DeletePacketAsync(int packetId, string employeeNumber)
@@ -101,10 +143,13 @@
 
             var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
 
-            if(packet.Canteen?.Location == canteenEmployee.Location)
-                return await _packetRepository.DeletePacketAsync(packetId);
+            if (packet.Canteen?.Location != canteenEmployee.Location)
+                throw new Exception("Dit pakket is niet van jouw kantine!");
 
-            return false;
+            if (packet.ReservedBy != null)
+                throw new Exception("Je kan dit pakket niet verwijderen, omdat deze al gereserveerd is!");
+                
+            return await _packetRepository.DeletePacketAsync(packetId);
         }
 
         public async Task<bool> CheckReservedPickUpDate(Student student, Packet packet)
@@ -116,29 +161,6 @@
                     reservedPickUpDate = true;
 
             return reservedPickUpDate;
-        }
-
-        public async Task<object> CheckAlcoholReturnProductList(IList<string> products)
-        {
-            var productList = new List<Product>();
-
-            var containsAlchohol = false;
-
-            foreach (var product in products)
-            {
-                var fullProduct = await _productService.GetProductByNameAsync(product);
-
-                if ((bool)fullProduct.IsAlcoholic!)
-                    containsAlchohol = true;
-
-                productList.Add(fullProduct);
-            }
-
-            return new
-            {
-                containsAlchohol,
-                productList
-            };
         }
     }
 }
