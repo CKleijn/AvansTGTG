@@ -94,6 +94,9 @@
                 if (e.Message == "Je mag maar maximaal 2 dagen vooruit plannen!")
                     ModelState.AddModelError("DateToLate", "Je mag maar maximaal 2 dagen vooruit plannen!");
 
+                if (e.Message == "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!")
+                    ModelState.AddModelError("DateOnOtherDay", "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
+
                 if (e.Message == "Je kantine biedt geen warme maaltijden aan!")
                     ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
 
@@ -174,6 +177,9 @@
 
                 if (e.Message == "Je mag maar maximaal 2 dagen vooruit plannen!")
                     ModelState.AddModelError("DateToLate", "Je mag maar maximaal 2 dagen vooruit plannen!");
+
+                if (e.Message == "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!")
+                    ModelState.AddModelError("DateOnOtherDay", "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
 
                 if (e.Message == "Je kan dit pakket niet bewerken, omdat deze al gereserveerd is!")
                     ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet bewerken, omdat deze al gereserveerd is!");
