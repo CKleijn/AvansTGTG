@@ -1,10 +1,10 @@
 ﻿using Core.Domain.Entities;
-using Infrastructure.Repositories;
+using Core.DomainServices.Interfaces.Services;
 
 namespace WebAPI.GraphQL
 {
     public class Query
     {
-        public async Task<IEnumerable<Packet>> Packets(PacketRepository packetRepository) => await packetRepository.GetPacketsAsync();
+        public async Task<IEnumerable<Packet>> Packets(IPacketService packetService) => await packetService.GetPacketsAsync();
     }
 }
