@@ -8,7 +8,6 @@
         {
             _studentRepository = studentRepository;
         }
-
         public async Task<Student> GetStudentByStudentNumberAsync(string studentNumber) => await _studentRepository.GetStudentByStudentNumberAsync(studentNumber);
 
         public async Task CreateStudentAsync(Student student) => await _studentRepository.CreateStudentAsync(student);

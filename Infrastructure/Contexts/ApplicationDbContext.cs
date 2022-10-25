@@ -15,7 +15,7 @@ namespace Infrastructure.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            var webClient = new WebClient();
+            var httpClient = new HttpClient();
 
             modelBuilder.Entity<Canteen>().HasData(
                 new Canteen
@@ -82,107 +82,118 @@ namespace Infrastructure.Contexts
                     ProductId = 1,
                     Name = "Glaasje melk",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/sticker-glass-orange-juice-white-background_1308-62908.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/sticker-glass-orange-juice-white-background_1308-62908.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 2,
                     Name = "Heineken biertje",
                     IsAlcoholic = true,
-                    Picture = webClient.DownloadData("https://cdn.dribbble.com/users/1574371/screenshots/4513279/media/b4efc27d1e4fcf0312956628bfe6c0d5.png")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://cdn.dribbble.com/users/1574371/screenshots/4513279/media/b4efc27d1e4fcf0312956628bfe6c0d5.png").Result)
                 },
                 new Product
                 {
                     ProductId = 3,
                     Name = "Rode wijn",
                     IsAlcoholic = true,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/red-wine-glasses-isolated_1308-119314.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/red-wine-glasses-isolated_1308-119314.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 4,
                     Name = "Toast",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/toasted-bread-slice-cartoon-sticker_1308-62854.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/toasted-bread-slice-cartoon-sticker_1308-62854.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 5,
                     Name = "Appel",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/sticker-design-with-apple-isolated_1308-66383.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/sticker-design-with-apple-isolated_1308-66383.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 6,
                     Name = "Banaan",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/sticker-design-with-banana-isolated_1308-77292.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/sticker-design-with-banana-isolated_1308-77292.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 7,
                     Name = "Zakje chips",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/premium-vector/pakket-en-bord-chips-in-trendy-cartoon-stijl-stapel-chips-in-een-kom-verpakkingsmalplaatje-op-witte-achtergrond-wordt-geisoleerd-die_168129-955.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/premium-vector/pakket-en-bord-chips-in-trendy-cartoon-stijl-stapel-chips-in-een-kom-verpakkingsmalplaatje-op-witte-achtergrond-wordt-geisoleerd-die_168129-955.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 8,
                     Name = "Tomatensoep",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://justtheforkingrecipe.com/wp-content/uploads/2020/06/soup2.png")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://justtheforkingrecipe.com/wp-content/uploads/2020/06/soup2.png").Result)
                 },
                 new Product
                 {
                     ProductId = 9,
                     Name = "Spaghetti",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/top-view-paghetti-carbonara-dish-sticker-white_1308-60923.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/top-view-paghetti-carbonara-dish-sticker-white_1308-60923.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 10,
                     Name = "Bakje kippenvleugels",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/flying-fried-chicken-with-bucket-cartoon_138676-2081.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/flying-fried-chicken-with-bucket-cartoon_138676-2081.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 11,
                     Name = "Hotdog",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/fast-food-sticker-design-with-hot-dog-isolated_1308-67129.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/fast-food-sticker-design-with-hot-dog-isolated_1308-67129.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 12,
                     Name = "Broodje hamburger",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/sticker-design-with-hamburger-isolated_1308-62485.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/sticker-design-with-hamburger-isolated_1308-62485.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 13,
                     Name = "Kersenijsje",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/ice-cream-cone-cartoon-icon-illustration-sweet-food-icon-concept-isolated-flat-cartoon-style_138676-2924.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/ice-cream-cone-cartoon-icon-illustration-sweet-food-icon-concept-isolated-flat-cartoon-style_138676-2924.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 14,
                     Name = "Chocoladeijsje",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/vector-illustration-ice-cream-colorful-style_341269-946.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/vector-illustration-ice-cream-colorful-style_341269-946.jpg").Result)
                 },
                 new Product
                 {
                     ProductId = 15,
                     Name = "Appeltaart",
                     IsAlcoholic = false,
-                    Picture = webClient.DownloadData("https://img.freepik.com/free-vector/homemade-apple-pie-white-background_1308-65205.jpg")
+                    Picture = ReadStream(httpClient.GetStreamAsync("https://img.freepik.com/free-vector/homemade-apple-pie-white-background_1308-65205.jpg").Result)
                 }
             );
+        }
+
+        public static byte[] ReadStream(Stream stream)
+        {
+            byte[] data = new byte[16 * 1024];
+            using MemoryStream ms = new();
+            int read;
+            while ((read = stream.Read(data, 0, data.Length)) > 0)
+                ms.Write(data, 0, read);
+
+            return ms.ToArray();
         }
     }
 }

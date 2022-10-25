@@ -1,5 +1,4 @@
-﻿@using Portal.Models.PacketVM
-@model PacketDetailViewModel
+﻿@model PacketDetailViewModel
 @{
     ViewData["Title"] = Model.Name;
     var isStudent = User.HasClaim("Role", "Student");
@@ -7,22 +6,26 @@
     var isCanteenLocation = User.HasClaim("Location", Model.Canteen!);
 }
 
+<div class="row mx-3 mt-3">
+    <div class="col-md-12 p-0">
+        <a asp-controller="Packet" asp-action="Index"><i class="bi bi-arrow-left"></i></a>
+    </div>
+</div>
+
+
 @if (ViewData.ModelState.ErrorCount > 0)
 {
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="alert alert-danger mx-3 mt-3" role="alert">
-                <div asp-validation-summary="All"></div>
-            </div>
+            @foreach (var modelError in ViewData.ModelState.SelectMany(key => key.Value!.Errors))
+            {
+                <div class="alert alert-danger mx-3 mt-3" role="alert">
+                    <p class="px-3"><i class="bi bi-bell"></i> @modelError.ErrorMessage</p>
+                </div>
+            }
         </div>
     </div>
 }
-
-<div class="row mx-3 mt-3">
-    <div class="col-md-12 p-0">
-        <i class="bi bi-arrow-left" onclick="history.back(1)"></i>
-    </div>
-</div>
 
 <div class="row mx-3 mt-3">
     <div class="col-md-4 d-flex justify-content-center align-items-center border-blue ch-100 position-relative">
