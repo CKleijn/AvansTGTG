@@ -64,8 +64,11 @@
             if (packet.PickUpDateTime < DateTime.Now || packet.PickUpDateTime > packet.LatestPickUpTime)
                 throw new Exception("Deze datum en/of tijd is onmogelijk!");
 
-            if (packet.PickUpDateTime > DateTime.Now.AddDays(2))
+            if (packet.PickUpDateTime!.Value.DayOfYear > DateTime.Now.AddDays(2).DayOfYear || packet.PickUpDateTime!.Value.Year != DateTime.Now.AddDays(2).Year)
                 throw new Exception("Je mag maar maximaal 2 dagen vooruit plannen!");
+
+            if (packet.LatestPickUpTime!.Value.DayOfYear != packet.PickUpDateTime!.Value.DayOfYear || packet.LatestPickUpTime!.Value.Year != packet.PickUpDateTime!.Value.Year)
+                throw new Exception("De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
 
             dynamic productList = await _productService.CheckAlcoholReturnProductList(products);
 
@@ -121,8 +124,11 @@
             if (newPacket.PickUpDateTime < DateTime.Now || newPacket.PickUpDateTime > newPacket.LatestPickUpTime)
                 throw new Exception("Deze datum en/of tijd is onmogelijk!");
 
-            if (newPacket.PickUpDateTime > DateTime.Now.AddDays(2))
+            if (newPacket.PickUpDateTime!.Value.DayOfYear > DateTime.Now.AddDays(2).DayOfYear || newPacket.PickUpDateTime!.Value.Year != DateTime.Now.AddDays(2).Year)
                 throw new Exception("Je mag maar maximaal 2 dagen vooruit plannen!");
+
+            if (newPacket.LatestPickUpTime!.Value.DayOfYear != newPacket.PickUpDateTime!.Value.DayOfYear || newPacket.LatestPickUpTime!.Value.Year != newPacket.PickUpDateTime!.Value.Year)
+                throw new Exception("De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
 
             dynamic productList = await _productService.CheckAlcoholReturnProductList(products);
 
