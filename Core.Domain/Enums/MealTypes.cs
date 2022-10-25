@@ -10,7 +10,7 @@
         Snack,
         [Display(Name = "Soep")]
         Soup,
-        [Display(Name = "Warme Maaltijd")]
+        [Display(Name = "Warme Avondmaaltijd")]
         WarmDinner,
         [Display(Name = "Fruit")]
         Fruit,

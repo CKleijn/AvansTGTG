@@ -1,6 +1,4 @@
-﻿using Core.Domain.Enums;
-
-namespace Portal.Models.AccountVM
+﻿namespace Portal.Models.AccountVM
 {
     public class CanteenEmployeeRegisterViewModel
     {
@@ -17,6 +15,7 @@ namespace Portal.Models.AccountVM
         [DisplayName("Kantine")]
         public Location? Location { get; set; }
         [Required(ErrorMessage = "Wachtwoord is verplicht!")]
+        [RegularExpression("^.*(?=.{8,})(?=.*[\\d])(?=.*[\\W]).*$", ErrorMessage = "Je wachtwoord moet minimaal bestaan uit 8 karakters waarvan 1 cijfer en 1 speciale karakter!")]
         [DisplayName("Wachtwoord")]
         public string? Password { get; set; }
     }

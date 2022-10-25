@@ -1,4 +1,6 @@
-﻿namespace Core.DomainServices.Services
+﻿using Core.DomainServices.Interfaces.Services;
+
+namespace Core.DomainServices.Services
 {
     public class ProductService : IProductService
     {
@@ -30,6 +32,29 @@
                 products.Add(product.Name!);
 
             return products;
+        }
+
+        public async Task<object> CheckAlcoholReturnProductList(IList<string> products)
+        {
+            var productList = new List<Product>();
+
+            var containsAlchohol = false;
+
+            foreach (var product in products)
+            {
+                var fullProduct = await GetProductByNameAsync(product);
+
+                if ((bool)fullProduct.IsAlcoholic!)
+                    containsAlchohol = true;
+
+                productList.Add(fullProduct);
+            }
+
+            return new
+            {
+                containsAlchohol,
+                productList
+            };
         }
     }
 }
