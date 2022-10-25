@@ -1,13 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-
-namespace WebAPI.Controllers
+﻿namespace WebAPI.Controllers
 {
     [ApiController]
     public class AuthController : Controller
@@ -24,11 +15,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("api/signin")]
-        public async Task<IActionResult> SignIn([FromBody] AuthCredentials authCredentials)
+        public async Task<IActionResult> SignUserIn([FromBody] AuthCredentials authCredentials)
         {
-            if(ModelState.IsValid)
+            try
             {
                 var user = await _userManager.FindByNameAsync(authCredentials.IdentificationNumber);
+
                 if (user != null)
                 {
                     if ((await _signInManager.PasswordSignInAsync(user, authCredentials.Password, false, false)).Succeeded)
@@ -43,26 +35,41 @@ namespace WebAPI.Controllers
                         var handler = new JwtSecurityTokenHandler();
                         var securityToken = new JwtSecurityTokenHandler().CreateToken(securityTokenDescriptor);
 
-                        return Ok(new { Succes = true, Token = handler.WriteToken(securityToken) });
+                        return Ok(new
+                        {
+                            StatusCode = 200,
+                            Message = "Je bent succesvol ingelogd!",
+                            Token = handler.WriteToken(securityToken)
+                        });
                     }
 
-                    ModelState.AddModelError("WrongPassword", "Wachtwoord is onjuist!");
+                    throw new Exception("Wachtwoord is onjuist!");
                 }
                 else
                 {
-                    ModelState.AddModelError("NoUser", "Er bestaat geen gebruiker met deze gegevens!");
+                    throw new Exception("Er bestaat geen gebruiker met deze gegevens!");
                 }
             }
-
-            return BadRequest(ModelState);
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = e.Message
+                });
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("api/signout")]
-        public async Task<IActionResult> SignOut()
+        public async Task<IActionResult> SignUserOut()
         {
             await _signInManager.SignOutAsync();
-            return Ok($"Uitgelogd als {User.Identity?.Name}");
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Je bent succesvol uitgelogd!"
+            });
         }
     }
 }
