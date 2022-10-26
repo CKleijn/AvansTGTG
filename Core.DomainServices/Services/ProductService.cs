@@ -1,6 +1,4 @@
-﻿using Core.DomainServices.Interfaces.Services;
-
-namespace Core.DomainServices.Services
+﻿namespace Core.DomainServices.Services
 {
     public class ProductService : IProductService
     {
@@ -34,27 +32,24 @@ namespace Core.DomainServices.Services
             return products;
         }
 
-        public async Task<object> CheckAlcoholReturnProductList(IList<string> products)
+        public async Task<List<Product>> ReturnProductListAsync(IList<string> products)
         {
             var productList = new List<Product>();
 
-            var containsAlchohol = false;
-
             foreach (var product in products)
-            {
-                var fullProduct = await GetProductByNameAsync(product);
+                productList.Add(await GetProductByNameAsync(product));
 
-                if ((bool)fullProduct.IsAlcoholic!)
-                    containsAlchohol = true;
+            return productList;
+        }
 
-                productList.Add(fullProduct);
-            }
+        public bool CheckAlcoholReturnBoolean(List<Product> products)
+        {
+            bool containsAlcohol = false;
 
-            return new
-            {
-                containsAlchohol,
-                productList
-            };
+            if (products.Where(p => p.IsAlcoholic == true).Any())
+                containsAlcohol = true;
+
+            return containsAlcohol;
         }
     }
 }

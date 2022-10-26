@@ -70,10 +70,10 @@
             if (packet.LatestPickUpTime!.Value.DayOfYear != packet.PickUpDateTime!.Value.DayOfYear || packet.LatestPickUpTime!.Value.Year != packet.PickUpDateTime!.Value.Year)
                 throw new Exception("De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
 
-            dynamic productList = await _productService.CheckAlcoholReturnProductList(products);
-
-            packet.Products = productList.productList;
-            packet.IsEightteenPlusPacket = productList.containsAlchohol;
+            var productList = await _productService.ReturnProductListAsync(products);
+            
+            packet.Products = productList;
+            packet.IsEightteenPlusPacket = _productService.CheckAlcoholReturnBoolean(productList);
             packet.City = canteen.City;
             packet.Canteen = canteen;
 
@@ -130,11 +130,11 @@
             if (newPacket.LatestPickUpTime!.Value.DayOfYear != newPacket.PickUpDateTime!.Value.DayOfYear || newPacket.LatestPickUpTime!.Value.Year != newPacket.PickUpDateTime!.Value.Year)
                 throw new Exception("De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
 
-            dynamic productList = await _productService.CheckAlcoholReturnProductList(products);
+            var productList = await _productService.ReturnProductListAsync(products);
 
             packet.Name = newPacket.Name;
-            packet.Products = productList.productList;
-            packet.IsEightteenPlusPacket = productList.containsAlchohol;
+            packet.Products = productList;
+            packet.IsEightteenPlusPacket = _productService.CheckAlcoholReturnBoolean(productList);
             packet.MealType = newPacket.MealType;
             packet.Price = newPacket.Price;
             packet.PickUpDateTime = newPacket.PickUpDateTime;

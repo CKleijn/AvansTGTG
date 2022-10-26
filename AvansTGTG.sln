@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Tests", "Infrastructure.Tests\Infrastructure.Tests.csproj", "{0C2418F0-71FD-4251-AF06-D0693388381C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{46376EEF-3A01-4798-9430-402682EB906E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{46376EEF-3A01-4798-9430-402682EB906E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
