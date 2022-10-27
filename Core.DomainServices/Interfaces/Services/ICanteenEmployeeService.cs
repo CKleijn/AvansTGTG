@@ -3,6 +3,6 @@
     public interface ICanteenEmployeeService
     {
         Task<CanteenEmployee> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber);
-        Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee);
+        Task<CanteenEmployee> CreateCanteenEmployeeAsync(CanteenEmployee canteenEmployee);
     }
 }

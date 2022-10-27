@@ -17,7 +17,15 @@
             _productService = productService;
         }
 
-        public async Task<Packet> GetPacketByIdAsync(int packetId) => await _packetRepository.GetPacketByIdAsync(packetId);
+        public async Task<Packet> GetPacketByIdAsync(int packetId)
+        {
+            var packet = await _packetRepository.GetPacketByIdAsync(packetId);
+
+            if (packet == null)
+                throw new Exception("Er bestaat geen pakket met dit ID!");
+
+            return packet;
+        }
 
         public async Task<IEnumerable<Packet>> GetPacketsAsync() => await _packetRepository.GetPacketsAsync();
 
@@ -25,7 +33,7 @@
         {
             var allPackets = await _packetRepository.GetPacketsAsync();
 
-            return allPackets.Where(p => p.ReservedBy == null);
+            return allPackets.Where(p => p.ReservedBy == null && p.LatestPickUpTime > DateTime.Now);
         }
 
         public async Task<IEnumerable<Packet>> GetMyCanteenOfferedPacketsAsync(string employeeNumber)
@@ -36,7 +44,18 @@
 
             var allPackets = await _packetRepository.GetPacketsAsync();
 
-            return allPackets.Where(p => p.Canteen == canteen);
+            return allPackets.Where(p => p.Canteen == canteen && p.LatestPickUpTime > DateTime.Now);
+        }
+
+        public async Task<IEnumerable<Packet>> GetOtherCanteenOfferedPacketsAsync(string employeeNumber)
+        {
+            var canteenEmployee = await _canteenEmployeeService.GetCanteenEmployeeByEmployeeNumberAsync(employeeNumber);
+
+            var canteen = await _canteenService.GetCanteenByLocationAsync((Location)canteenEmployee.Location!);
+
+            var allPackets = await _packetRepository.GetPacketsAsync();
+
+            return allPackets.Where(p => p.Canteen != canteen && p.LatestPickUpTime > DateTime.Now);
         }
 
         public async Task<IEnumerable<Packet>> GetMyReservedPacketsAsync(string studentNumber)
@@ -45,7 +64,7 @@
 
             var allPackets = await _packetRepository.GetPacketsAsync();
 
-            return allPackets.Where(p => p.ReservedBy == student);
+            return allPackets.Where(p => p.ReservedBy == student && p.LatestPickUpTime > DateTime.Now);
         }
 
         public async Task<Packet> CreatePacketAsync(Packet packet, string employeeNumber, IList<string> products)
@@ -70,14 +89,19 @@
             if (packet.LatestPickUpTime!.Value.DayOfYear != packet.PickUpDateTime!.Value.DayOfYear || packet.LatestPickUpTime!.Value.Year != packet.PickUpDateTime!.Value.Year)
                 throw new Exception("De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
 
-            var productList = await _productService.ReturnProductListAsync(products);
+            var productList = await _productService.GetProductsFromStringProductsAsync(products);
             
             packet.Products = productList;
             packet.IsEightteenPlusPacket = _productService.CheckAlcoholReturnBoolean(productList);
             packet.City = canteen.City;
             packet.Canteen = canteen;
 
-            return await _packetRepository.CreatePacketAsync(packet);
+            var succeeded = await _packetRepository.CreatePacketAsync(packet);
+
+            if (!succeeded)
+                throw new Exception("Het pakket is niet aangemaakt!");
+
+            return packet;
         }
 
         public async Task<bool> ReservePacketAsync(int packetId, string studentNumber)
@@ -97,7 +121,12 @@
 
             packet!.ReservedBy = student;
 
-            return await _packetRepository.UpdatePacketAsync(packetId);
+            var succeeded = await _packetRepository.UpdatePacketAsync(packetId);
+
+            if (!succeeded)
+                throw new Exception("Het pakket is niet gereserveerd!");
+
+            return succeeded;
         }
 
         public async Task<bool> UpdatePacketAsync(int packetId, Packet newPacket, string employeeNumber, IList<string> products)
@@ -130,7 +159,7 @@
             if (newPacket.LatestPickUpTime!.Value.DayOfYear != newPacket.PickUpDateTime!.Value.DayOfYear || newPacket.LatestPickUpTime!.Value.Year != newPacket.PickUpDateTime!.Value.Year)
                 throw new Exception("De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
 
-            var productList = await _productService.ReturnProductListAsync(products);
+            var productList = await _productService.GetProductsFromStringProductsAsync(products);
 
             packet.Name = newPacket.Name;
             packet.Products = productList;
@@ -140,7 +169,12 @@
             packet.PickUpDateTime = newPacket.PickUpDateTime;
             packet.LatestPickUpTime = newPacket.LatestPickUpTime;
 
-            return await _packetRepository.UpdatePacketAsync(packetId);
+            var succeeded = await _packetRepository.UpdatePacketAsync(packetId);
+
+            if (!succeeded)
+                throw new Exception("Het pakket is niet bewerkt!");
+
+            return succeeded;
         }
 
         public async Task<bool> DeletePacketAsync(int packetId, string employeeNumber)
@@ -155,18 +189,21 @@
             if (packet.ReservedBy != null)
                 throw new Exception("Je kan dit pakket niet verwijderen, omdat deze al gereserveerd is!");
                 
-            return await _packetRepository.DeletePacketAsync(packetId);
+            var succeeded = await _packetRepository.DeletePacketAsync(packetId);
+
+            if (!succeeded)
+                throw new Exception("Het pakket is niet verwijderd!");
+
+            return succeeded;
         }
 
         public async Task<bool> CheckReservedPickUpDate(Student student, Packet packet)
         {
-            bool reservedPickUpDate = false;
-
             foreach (var singlePacket in await GetPacketsAsync())
                 if (singlePacket.ReservedBy == student && singlePacket?.PickUpDateTime!.Value.DayOfYear == packet?.PickUpDateTime!.Value.DayOfYear)
-                    reservedPickUpDate = true;
+                    return true;
 
-            return reservedPickUpDate;
+            return false;
         }
     }
 }

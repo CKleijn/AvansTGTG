@@ -1,14 +1,51 @@
-﻿using Core.Domain.Entities;
-using Core.Domain.Enums;
-using Core.DomainServices.Interfaces.Repositories;
-using Core.DomainServices.Services;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Moq;
-
-namespace Core.DomainServices.Tests
+﻿namespace Core.DomainServices.Tests
 {
     public class ProductTests
     {
+        [Fact]
+        public async Task Get_Product_By_Name_Return_Product()
+        {
+            //Arrange
+            var productRepoMock = new Mock<IProductRepository>();
+
+            var productService = new ProductService(productRepoMock.Object);
+
+            var product = new Product()
+            {
+                ProductId = 1,
+                Name = "Bier",
+                IsAlcoholic = true,
+                Picture = null
+            };
+
+            productRepoMock.Setup(p => p.GetProductByNameAsync(product.Name)).ReturnsAsync(product);
+
+            //Act
+            var result = await productService.GetProductByNameAsync(product.Name);
+
+            //Assert
+            Assert.Equal(product, result);
+        }
+
+        [Fact]
+        public void Get_Product_By_Name_Return_Exception()
+        {
+            //Arrange
+            var productRepoMock = new Mock<IProductRepository>();
+
+            var productService = new ProductService(productRepoMock.Object);
+
+            Product? product = null;
+
+            productRepoMock.Setup(p => p.GetProductByNameAsync("Pakket2")).ReturnsAsync(product);
+
+            //Act
+            var result = Record.ExceptionAsync(async () => await productService.GetProductByNameAsync("Pakket2"));
+
+            //Arrange
+            Assert.True(result.Result.Message == "Er bestaat geen product met deze naam!");
+        }
+
         [Fact]
         public async Task Get_All_Products_And_Return_In_SelectList()
         {
@@ -142,7 +179,7 @@ namespace Core.DomainServices.Tests
             };
 
             //Act
-            var result = productService.GetProductsFromPacketInList(packet);
+            var result = productService.GetProductsNamesFromPacketInList(packet);
 
             //Assert
             Assert.Equal(products, result);
@@ -187,7 +224,7 @@ namespace Core.DomainServices.Tests
             };
 
             //Act
-            var result = productService.GetProductsFromPacketInList(packet);
+            var result = productService.GetProductsNamesFromPacketInList(packet);
 
             //Assert
             Assert.Equal(products, result);
@@ -195,7 +232,7 @@ namespace Core.DomainServices.Tests
         }
 
         [Fact]
-        public async Task Get_All_Products_And_Return_In_Product_List()
+        public async Task Get_All_Products_Out_Of_String_List_And_Return_In_Product_List()
         {
             //Arrange
             var productRepoMock = new Mock<IProductRepository>();
@@ -223,7 +260,7 @@ namespace Core.DomainServices.Tests
             productRepoMock.Setup(p => p.GetProductByNameAsync(product.Name)).ReturnsAsync(product);
 
             //Act
-            var result = await productService.ReturnProductListAsync(productsString);
+            var result = await productService.GetProductsFromStringProductsAsync(productsString);
 
             //Assert
             Assert.Equal(products, result);
@@ -231,7 +268,7 @@ namespace Core.DomainServices.Tests
         }
 
         [Fact]
-        public async Task Get_All_Products_And_Return_Empty_Product_List()
+        public async Task Get_All_Products_Out_Of_String_List_And_Return_Empty_Product_List()
         {
             //Arrange
             var productRepoMock = new Mock<IProductRepository>();
@@ -249,11 +286,35 @@ namespace Core.DomainServices.Tests
             };
 
             //Act
-            var result = await productService.ReturnProductListAsync(productsString);
+            var result = await productService.GetProductsFromStringProductsAsync(productsString);
 
             //Assert
             Assert.Equal(products, result);
             Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Get_All_Products_Out_Of_String_List_And_Return_Exception()
+        {
+            //Arrange
+            var productRepoMock = new Mock<IProductRepository>();
+
+            var productService = new ProductService(productRepoMock.Object);
+
+            var productsString = new List<string>
+            {
+                "Bier"
+            };
+
+            Product? product = null;
+
+            productRepoMock.Setup(p => p.GetProductByNameAsync(productsString[0])).ReturnsAsync(product);
+
+            //Act
+            var result = Record.ExceptionAsync(async () => await productService.GetProductsFromStringProductsAsync(productsString));
+
+            //Arrange
+            Assert.True(result.Result.Message == "Er bestaat geen product met deze naam!");
         }
 
         [Fact]
