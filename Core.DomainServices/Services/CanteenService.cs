@@ -9,7 +9,15 @@
             _canteenRepository = canteenRepository;
         }
 
-        public async Task<Canteen> GetCanteenByLocationAsync(Location canteenLocation) => await _canteenRepository.GetCanteenByLocationAsync(canteenLocation);
+        public async Task<Canteen> GetCanteenByLocationAsync(Location canteenLocation)
+        {
+            var canteen = await _canteenRepository.GetCanteenByLocationAsync(canteenLocation);
+
+            if (canteen == null)
+                throw new Exception("Er bestaat geen kantine met deze locatie!");
+
+            return canteen;
+        }
 
         public async Task<IEnumerable<Canteen>> GetCanteensAsync() => await _canteenRepository.GetCanteensAsync();
     }

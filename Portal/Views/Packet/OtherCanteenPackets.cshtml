@@ -1,0 +1,36 @@
+﻿@model PacketListViewModel
+@{
+    ViewData["Title"] = "Andere kantine pakketten";
+}
+
+<div class="p-3">
+    <h3>Andere kantine pakketten</h3>
+    <div class="row">
+        @if (Model.PacketList!.Any())
+        {
+            @foreach (var packet in Model.PacketList!)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-5">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="@packet.Products!.First().Picture" alt="@packet.Products!.First().Name">
+                        <div class="position-absolute top-0 start-0 price-tag c-f-size">
+                            <span class="blue-text">@packet.Price</span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket <i class="@((packet.ReservedBy != "-") ? "bi bi-check-lg" : "")"></i></h4>
+                            @packet.PickUpDateTime
+                            <div class="mt-3">
+                                <a class="btn btn-blue w-100" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Er zijn nog geen pakketten binnen andere kantines!</p>
+        }
+    </div>
+</div>
+

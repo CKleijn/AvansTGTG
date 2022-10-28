@@ -3,6 +3,6 @@
     public interface IStudentService
     {
         Task<Student> GetStudentByStudentNumberAsync(string studentNumber);
-        Task CreateStudentAsync(Student student);
+        Task<Student> CreateStudentAsync(Student student);
     }
 }

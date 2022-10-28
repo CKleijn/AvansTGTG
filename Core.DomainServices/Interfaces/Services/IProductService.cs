@@ -5,8 +5,8 @@
         Task<Product> GetProductByNameAsync(string name);
         Task<IEnumerable<Product>> GetProductsAsync();
         Task<List<SelectListItem>> GetAllProductsInSelectListAsync();
-        List<string> GetProductsFromPacketInList(Packet packet);
-        Task<object> CheckAlcoholReturnProductList(IList<string> products);
-
+        List<string> GetProductsNamesFromPacketInList(Packet packet);
+        Task<List<Product>> GetProductsFromStringProductsAsync(IList<string> products);
+        bool CheckAlcoholReturnBoolean(List<Product> products);
     }
 }

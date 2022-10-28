@@ -39,7 +39,10 @@
         public async Task<IActionResult> AllPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetAllAvailablePacketsAsync()));
 
         [Authorize(Policy = "CanteenEmployeeOnly")]
-        public async Task<IActionResult> AllCanteenPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(User.Identity?.Name!)));
+        public async Task<IActionResult> MyCanteenPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyCanteenOfferedPacketsAsync(User.Identity?.Name!)));
+
+        [Authorize(Policy = "CanteenEmployeeOnly")]
+        public async Task<IActionResult> OtherCanteenPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetOtherCanteenOfferedPacketsAsync(User.Identity?.Name!)));
 
         [Authorize(Policy = "StudentOnly")]
         public async Task<IActionResult> MyReservedPackets() => View(await GetPacketListViewModelAsync(await _packetService.GetMyReservedPacketsAsync(User.Identity?.Name!)));
@@ -50,8 +53,11 @@
             {
                 return View(await GetPacketDetailViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
             }
-            catch
+            catch (Exception e)
             {
+                if (e.Message == "Er bestaat geen pakket met dit ID!")
+                    ModelState.AddModelError("PacketNotFound", e.Message);
+
                 return RedirectToAction("Index", "Packet");
             }
         }
@@ -86,19 +92,25 @@
             catch (Exception e)
             {
                 if (e.Message == "Producten zijn verplicht!")
-                    ModelState.AddModelError("NoProductsSelected", "Producten zijn verplicht!");
+                    ModelState.AddModelError("NoProductsSelected", e.Message);
 
                 if (e.Message == "Deze datum en/of tijd is onmogelijk!")
-                    ModelState.AddModelError("DateNotPossible", "Deze datum en/of tijd is onmogelijk!");
+                    ModelState.AddModelError("DateNotPossible", e.Message);
 
                 if (e.Message == "Je mag maar maximaal 2 dagen vooruit plannen!")
-                    ModelState.AddModelError("DateToLate", "Je mag maar maximaal 2 dagen vooruit plannen!");
+                    ModelState.AddModelError("DateToLate", e.Message);
 
                 if (e.Message == "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!")
-                    ModelState.AddModelError("DateOnOtherDay", "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
+                    ModelState.AddModelError("DateOnOtherDay", e.Message);
 
                 if (e.Message == "Je kantine biedt geen warme maaltijden aan!")
-                    ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
+                    ModelState.AddModelError("NotOfferingHotMeals", e.Message);
+
+                if (e.Message == "Er bestaat geen product met deze naam!")
+                    ModelState.AddModelError("ProductNotFound", e.Message);
+
+                if (e.Message == "Het pakket is niet aangemaakt!")
+                    ModelState.AddModelError("PacketNotCreated", e.Message);
 
                 var model = new PacketViewModel()
                 {
@@ -125,14 +137,23 @@
             }
             catch (Exception e)
             {
+                if (e.Message == "Er bestaat geen pakket met dit ID!")
+                {
+                    ModelState.AddModelError("PacketNotFound", e.Message);
+                    return RedirectToAction("Index", "Packet");
+                }
+
                 if (e.Message == "Je kan dit pakket niet reserveren, omdat dit pakket 18+ producten bevat!")
-                    ModelState.AddModelError("NotEightteen", "Je kan dit pakket niet reserveren, omdat dit pakket 18+ producten bevat!");
+                    ModelState.AddModelError("NotEightteen", e.Message);
 
                 if (e.Message == "Je kan dit pakket niet reserveren, omdat deze al gereserveerd is door een andere student!")
-                    ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet reserveren, omdat deze al gereserveerd is door een andere student!");
+                    ModelState.AddModelError("PacketReservedByOtherStudent", e.Message);
 
                 if (e.Message == "Je kan dit pakket niet reserveren, omdat je al meer dan 1 pakket op deze afhaaldatum hebt!")
-                    ModelState.AddModelError("AlreadyHaveReservedPacket", "Je kan dit pakket niet reserveren, omdat je al meer dan 1 pakket op deze afhaaldatum hebt!");
+                    ModelState.AddModelError("AlreadyHaveReservedPacket", e.Message);
+
+                if (e.Message == "Het pakket is niet gereserveerd!")
+                    ModelState.AddModelError("PacketNotReserved", e.Message);
 
                 return View("Detail", await GetPacketDetailViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
             }
@@ -145,8 +166,11 @@
             {
                 return View(await GetPacketViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
             }
-            catch
+            catch (Exception e)
             {
+                if (e.Message == "Er bestaat geen pakket met dit ID!")
+                    ModelState.AddModelError("PacketNotFound", e.Message);
+
                 return RedirectToAction("Index", "Packet");
             }
         }
@@ -166,26 +190,38 @@
             }
             catch (Exception e)
             {
+                if (e.Message == "Er bestaat geen pakket met dit ID!")
+                {
+                    ModelState.AddModelError("PacketNotFound", e.Message);
+                    return RedirectToAction("Index", "Packet");
+                }
+
                 if (e.Message == "Dit pakket is niet van jouw kantine!")
-                    ModelState.AddModelError("NoCanteenPacket", "Dit pakket is niet van jouw kantine!");
+                    ModelState.AddModelError("NoCanteenPacket", e.Message);
 
                 if (e.Message == "Producten zijn verplicht!")
-                    ModelState.AddModelError("NoProductsSelected", "Producten zijn verplicht!");
+                    ModelState.AddModelError("NoProductsSelected", e.Message);
 
                 if (e.Message == "Deze datum en/of tijd is onmogelijk!")
-                    ModelState.AddModelError("DateNotPossible", "Deze datum en/of tijd is onmogelijk!");
+                    ModelState.AddModelError("DateNotPossible", e.Message);
 
                 if (e.Message == "Je mag maar maximaal 2 dagen vooruit plannen!")
-                    ModelState.AddModelError("DateToLate", "Je mag maar maximaal 2 dagen vooruit plannen!");
+                    ModelState.AddModelError("DateToLate", e.Message);
 
                 if (e.Message == "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!")
-                    ModelState.AddModelError("DateOnOtherDay", "De uiterlijke afhaaltijd moet plaatsvinden op dezelfde dag als de ophaaldag!");
+                    ModelState.AddModelError("DateOnOtherDay", e.Message);
 
                 if (e.Message == "Je kan dit pakket niet bewerken, omdat deze al gereserveerd is!")
-                    ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet bewerken, omdat deze al gereserveerd is!");
+                    ModelState.AddModelError("PacketAlreadyReserved", e.Message);
 
                 if (e.Message == "Je kantine biedt geen warme maaltijden aan!")
-                    ModelState.AddModelError("NotOfferingHotMeals", "Je kantine biedt geen warme maaltijden aan!");
+                    ModelState.AddModelError("NotOfferingHotMeals", e.Message);
+
+                if (e.Message == "Er bestaat geen product met deze naam!")
+                    ModelState.AddModelError("ProductNotFound", e.Message);
+
+                if (e.Message == "Het pakket is niet bewerkt!")
+                    ModelState.AddModelError("PacketNotUpdated", e.Message);
 
                 return View(await GetPacketViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
             }
@@ -206,11 +242,20 @@
             }
             catch (Exception e)
             {
+                if (e.Message == "Er bestaat geen pakket met dit ID!")
+                {
+                    ModelState.AddModelError("PacketNotFound", e.Message);
+                    return RedirectToAction("Index", "Packet");
+                }
+
                 if (e.Message == "Dit pakket is niet van jouw kantine!")
-                    ModelState.AddModelError("NoCanteenPacket", "Dit pakket is niet van jouw kantine!");
+                    ModelState.AddModelError("NoCanteenPacket", e.Message);
 
                 if (e.Message == "Je kan dit pakket niet verwijderen, omdat deze al gereserveerd is!")
-                    ModelState.AddModelError("PacketReserved", "Je kan dit pakket niet verwijderen, omdat deze al gereserveerd is!");
+                    ModelState.AddModelError("PacketAlreadyReserved", e.Message);
+
+                if (e.Message == "Het pakket is niet verwijderd!")
+                    ModelState.AddModelError("PacketNotDeleted", e.Message);
 
                 return View("Detail", await GetPacketDetailViewModelAsync(await _packetService.GetPacketByIdAsync(id)));
             }
@@ -222,7 +267,7 @@
             {
                 Packet = packet,
                 AllProducts = await _productService.GetAllProductsInSelectListAsync(),
-                SelectedProducts = _productService.GetProductsFromPacketInList(packet)
+                SelectedProducts = _productService.GetProductsNamesFromPacketInList(packet)
             };
         }
 
@@ -243,7 +288,18 @@
 
         public async Task<PacketDetailViewModel> FormatPacketAsync(Packet packet)
         {
-            var student = User.HasClaim("Role", "Student") ? await _studentService.GetStudentByStudentNumberAsync(User.Identity?.Name!) : null;
+            Student? student = null;
+
+            try
+            {
+                if(User.HasClaim("Role", "Student"))
+                    student = await _studentService.GetStudentByStudentNumberAsync(User.Identity?.Name!);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Er bestaat geen student met dit studentennummer!")
+                    student = null;
+            }
 
             return new PacketDetailViewModel()
             {

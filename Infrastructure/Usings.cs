@@ -4,5 +4,6 @@ global using Core.Domain.Entities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Core.Domain.Enums;
+global using Microsoft.AspNetCore.Mvc.Rendering;
 
 
