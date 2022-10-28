@@ -1,13 +1,8 @@
-using Core.DomainServices.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Route("api/[controller]")]
+    [Route("api/packet")]
     public class PacketController : ControllerBase
     {
         private readonly IPacketService _packetService;
@@ -18,14 +13,40 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}/reserve")]
-        public async Task<IActionResult> Update(int id)
+        public async Task<ActionResult> Reserve(int id)
         {
-            var reserve = await _packetService.ReservePacketAsync(id, null);
+            try
+            {
+                var response = await _packetService.ReservePacketAsync(id, User.Identity?.Name!);
 
-            if(reserve)
-                return Ok(await _packetService.GetPacketByIdAsync(id));
+                if (response)
+                {
+                    var packet = await _packetService.GetPacketByIdAsync(id);
 
-            return StatusCode(409);
+                    foreach (var product in packet.Products!)
+                    {
+                        product.Packets = null;
+                        product.Picture = null;
+                    }
+
+                    return Ok(new
+                    {
+                        StatusCode = 200,
+                        Message = "Dit pakket is succesvol gereserveerd!",
+                        Packet = packet
+                    });
+                }
+
+                throw new Exception();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = e.Message
+                });
+            }
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Core.DomainServices.Interfaces.Services;
-
-namespace Core.DomainServices.Services
+﻿namespace Core.DomainServices.Services
 {
     public class ProductService : IProductService
     {
@@ -11,50 +9,32 @@ namespace Core.DomainServices.Services
             _productRepository = productRepository;
         }
 
-        public async Task<Product> GetProductByNameAsync(string name) => await _productRepository.GetProductByNameAsync(name);
+        public async Task<Product> GetProductByNameAsync(string name)
+        {
+            var product = await _productRepository.GetProductByNameAsync(name);
+
+            if (product == null)
+                throw new Exception("Er bestaat geen product met deze naam!");
+
+            return product;
+        }
 
         public async Task<IEnumerable<Product>> GetProductsAsync() => await _productRepository.GetProductsAsync();
 
-        public async Task<List<SelectListItem>> GetAllProductsInSelectListAsync()
-        {
-            var products = new List<SelectListItem>();
+        public async Task<List<SelectListItem>> GetAllProductsInSelectListAsync() => (await GetProductsAsync()).Select(product => new SelectListItem { Text = product.Name, Value = product.Name }).ToList();
 
-            foreach (var product in await GetProductsAsync())
-                products.Add(new SelectListItem { Text = product.Name, Value = product.Name });
+        public List<string> GetProductsNamesFromPacketInList(Packet packet) => packet.Products!.Select(product => product.Name!).ToList();
 
-            return products;
-        }
-        public List<string> GetProductsFromPacketInList(Packet packet)
-        {
-            var products = new List<string>();
-
-            foreach (var product in packet.Products!)
-                products.Add(product.Name!);
-
-            return products;
-        }
-
-        public async Task<object> CheckAlcoholReturnProductList(IList<string> products)
+        public async Task<List<Product>> GetProductsFromStringProductsAsync(IList<string> products)
         {
             var productList = new List<Product>();
 
-            var containsAlchohol = false;
-
             foreach (var product in products)
-            {
-                var fullProduct = await GetProductByNameAsync(product);
+                productList.Add(await GetProductByNameAsync(product));
 
-                if ((bool)fullProduct.IsAlcoholic!)
-                    containsAlchohol = true;
-
-                productList.Add(fullProduct);
-            }
-
-            return new
-            {
-                containsAlchohol,
-                productList
-            };
+            return productList;
         }
+
+        public bool CheckAlcoholReturnBoolean(List<Product> products) => products.Any(p => p.IsAlcoholic == true);
     }
 }

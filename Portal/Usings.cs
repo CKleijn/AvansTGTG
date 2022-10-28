@@ -16,5 +16,7 @@ global using System.Globalization;
 global using System.Reflection;
 global using Core.Domain.Enums;
 global using Microsoft.AspNetCore.Mvc.Rendering;
-
+global using Core.DomainServices.Interfaces.Repositories;
+global using Core.DomainServices.Services;
+global using Infrastructure.Repositories;
 
