@@ -3729,7 +3729,7 @@
         }
 
         [Fact]
-        public async Task Get_Packet_Not_Deleted_Exception_When_Deleting_Packet()
+        public void Get_Packet_Not_Deleted_Exception_When_Deleting_Packet()
         {
             //Arrange
             var packetRepoMock = new Mock<IPacketRepository>();
