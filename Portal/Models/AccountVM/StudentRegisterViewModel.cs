@@ -9,6 +9,7 @@
         [DisplayName("Achternaam")]
         public string? LastName { get; set; }
         [Required(ErrorMessage = "Geboortedatum is verplicht!")]
+        [StudentExtensions.DateOfBirthValidation]
         [DisplayName("Geboortedatum")]
         public DateTime? DateOfBirth { get; set; }
         [Required(ErrorMessage = "Studentennummer is verplicht!")]
