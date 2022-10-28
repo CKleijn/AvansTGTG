@@ -8,28 +8,17 @@
             _context = context;
         }
 
-        public async Task<CanteenEmployee> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber)
+        public async Task<CanteenEmployee?> GetCanteenEmployeeByEmployeeNumberAsync(string employeeNumber) => await _context.CanteenEmployees.FirstOrDefaultAsync(c => c.EmployeeNumber == employeeNumber);
+
+        public async Task<bool> CreateCanteenEmployeeAsync(CanteenEmployee canteenEmployee)
         {
-            var canteenEmployee = await _context.CanteenEmployees.FirstOrDefaultAsync(c => c.EmployeeNumber == employeeNumber);
+            if (canteenEmployee == null)
+                return false;
 
-            if (canteenEmployee != null)
-                return canteenEmployee;
+            await _context.CanteenEmployees.AddAsync(canteenEmployee);
+            await _context.SaveChangesAsync();
 
-            throw new Exception($"Er bestaat geen kantine medewerker met de personeelsnummer {employeeNumber}!");
-        }
-
-        public async Task CreateCanteenEmployeeAsync(CanteenEmployee CanteenEmployee)
-        {
-            var newCanteenEmployee = await _context.CanteenEmployees.AddAsync(CanteenEmployee);
-
-            if (newCanteenEmployee != null)
-            {
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("De meegegeven kantine medewerker is fout!");
-            }
+            return true;
         }
     }
 }

@@ -1,8 +1,3 @@
-using Core.DomainServices.Interfaces.Repositories;
-using Core.DomainServices.Interfaces.Services;
-using Core.DomainServices.Services;
-using Infrastructure.Repositories;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationConnectionString")));

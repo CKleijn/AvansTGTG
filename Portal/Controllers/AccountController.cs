@@ -1,11 +1,13 @@
-﻿namespace Portal.Controllers
+﻿using Core.Domain.Entities;
+
+namespace Portal.Controllers
 {
     public class AccountController : Controller
     {
-        private UserManager<IdentityUser> _userManager;
-        private SignInManager<IdentityUser> _signInManager;
-        private IStudentService _studentService;
-        private ICanteenEmployeeService _canteenEmployeeService;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IStudentService _studentService;
+        private readonly ICanteenEmployeeService _canteenEmployeeService;
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IStudentService studentService, ICanteenEmployeeService canteenEmployeeService)
         {
@@ -88,7 +90,15 @@
 
                 if (result.Succeeded)
                 {
-                    await _studentService.CreateStudentAsync(student);
+                    try
+                    {
+                        await _studentService.CreateStudentAsync(student);
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.Message == "De student is niet aangemaakt!")
+                            ModelState.AddModelError("StudentNotCreated", e.Message);
+                    }
                     await _signInManager.PasswordSignInAsync(user, studentRegisterViewModel.Password, false, false);
                     return RedirectToAction("Index", "Packet");
                 }
@@ -128,7 +138,15 @@
 
                 if (result.Succeeded)
                 {
-                    await _canteenEmployeeService.CreateCanteenEmployeeAsync(canteenEmployee);
+                    try
+                    {
+                        await _canteenEmployeeService.CreateCanteenEmployeeAsync(canteenEmployee);
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.Message == "De kantine medewerker is niet aangemaakt!")
+                            ModelState.AddModelError("CanteenEmployeeNotCreated", e.Message);
+                    }
                     await _signInManager.PasswordSignInAsync(user, canteenEmployeeRegisterViewModel.Password, false, false);
                     return RedirectToAction("Index", "Packet");
                 } 
