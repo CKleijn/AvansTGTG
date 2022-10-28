@@ -1,7 +1,4 @@
-﻿using Core.Domain.Entities;
-using Core.DomainServices.Interfaces.Services;
-
-namespace WebAPI.GraphQL
+﻿namespace WebAPI.GraphQL
 {
     public class Query
     {

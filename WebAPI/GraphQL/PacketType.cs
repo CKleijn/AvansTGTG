@@ -2,7 +2,7 @@
 
 namespace WebAPI.GraphQL
 {
-    public class GraphQLTypes : ObjectType<Packet>
+    public class PacketType : ObjectType<Packet>
     {
     }
 }
