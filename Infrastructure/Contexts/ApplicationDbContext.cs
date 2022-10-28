@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace Infrastructure.Contexts
+﻿namespace Infrastructure.Contexts
 {
     public class ApplicationDbContext : DbContext
     {

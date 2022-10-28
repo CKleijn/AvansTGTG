@@ -14,3 +14,4 @@ global using Infrastructure.Repositories;
 global using Microsoft.OpenApi.Models;
 global using Core.DomainServices.Services;
 global using Core.DomainServices.Interfaces.Repositories;
+global using Core.Domain.Entities;
