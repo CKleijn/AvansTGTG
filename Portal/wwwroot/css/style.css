@@ -118,8 +118,13 @@ li {
     list-style-type: none !important;
 }
 
+.dropdown-item:active {
+    background-color: var(--white) !important;
+}
+
 .dropdown-menu > a {
     color: var(--black) !important;
+    background-color: var(--white) !important;
 }
 
     .dropdown-menu > a:hover {
