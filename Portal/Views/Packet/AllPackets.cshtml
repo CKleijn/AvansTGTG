@@ -19,7 +19,8 @@
                         </div>
                         <div class="card-body">
                             <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
-                            @packet.PickUpDateTime
+                            @packet.PickUpDateTime<br>
+                            @packet.Canteen, @packet.City
                             <div class="d-flex justify-content-between w-100 mt-3">
                                 @if (isStudent || !isStudent && !isCanteenEmployee)
                                 {
