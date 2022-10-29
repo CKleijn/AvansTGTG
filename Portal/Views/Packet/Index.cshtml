@@ -37,7 +37,8 @@
                         </div>
                         <div class="card-body">
                             <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
-                            @packet.PickUpDateTime
+                            @packet.PickUpDateTime<br>
+                            @packet.Canteen, @packet.City
                             <div class="d-flex justify-content-between w-100 mt-3">
                                 @if (isStudent || !isStudent && !isCanteenEmployee)
                                 {
@@ -74,7 +75,8 @@
                         </div>
                         <div class="card-body">
                             <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket</h4>
-                            @packet.PickUpDateTime
+                            @packet.PickUpDateTime<br>
+                            @packet.Canteen, @packet.City
                             <div class="d-flex justify-content-between w-100 mt-3">
                                 <a class="btn btn-blue w-100" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
                             </div>
@@ -88,7 +90,7 @@
     }
     else if (isCanteenEmployee && Model.AllCanteenPackets!.Any())
     {
-        <h3>Alle kantine pakketten</h3>
+        <h3>Mijn kantine pakketten</h3>
         <div class="row">
             @foreach (var packet in Model.AllCanteenPackets!)
             {
@@ -100,7 +102,8 @@
                         </div>
                         <div class="card-body">
                             <h4 class="card-title">@packet.Name @packet.IsEightteenPlusPacket <i class="@((packet.ReservedBy != "-") ? "bi bi-check-lg" : "")"></i></h4>
-                            @packet.PickUpDateTime
+                            @packet.PickUpDateTime<br>
+                            @packet.Canteen, @packet.City
                             <div class="mt-3">
                                 <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="Detail" asp-route-id="@packet.PacketId">Alle details</a>
                                 <a class="btn btn-blue w-100 mb-1" asp-controller="Packet" asp-action="UpdatePacket" asp-route-id="@packet.PacketId">Bewerken</a>
